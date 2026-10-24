@@ -1,0 +1,132 @@
+;;; Lcl syntax tour used to exercise the tree-sitter grammar.
+;;;
+;;; Every construct here is valid Lcl (run it with `lcl examples.lcl`),
+;;; and the file must parse without ERROR nodes: `tree-sitter parse
+;;; examples.lcl`.
+
+;; ============================================================================
+;; Bindings and names
+;; ============================================================================
+
+let x 10                        ;; immutable binding, typed int
+var counter 0                   ;; mutable cell
+set! counter [+ $counter $x]
+let max-len 42                  ;; kebab-case binding names are ordinary words
+let done? 1
+puts "counter = $counter, max-len = ${max-len}, done? = ${done?}"
+puts "bare \$name stops at - ? !, so \$max-len would be \$max then -len"
+puts "literal dollars: cost $5, [$#] and $ alone"
+
+;; ============================================================================
+;; Procedures, lambdas, closures
+;; ============================================================================
+
+;;; Adds one to its argument.
+proc add-one {n} { + $n 1 }
+
+proc padd {a b (c 0) *rest} { + $a $b $c [len $rest] }
+
+proc make_counter {start} {
+    var n $start
+    lambda {} { set! n [+ $n 1]; $n }
+}
+
+let c [make_counter 10]
+puts [apply $c]                 ;; 11 -- `[$c]` would just return the closure
+puts [apply ${add-one} 41]
+let args (1 2 3)
+puts [padd @$args]              ;; @ spreads a list as arguments
+puts [padd @[list 4 5] 6]
+
+;; ============================================================================
+;; Namespaces
+;; ============================================================================
+
+namespace geom {
+    ;;; Circle constant.
+    let pi 3.14159
+    proc double {x} { + $x $x }
+    namespace inner {
+        let y 2
+    }
+}
+
+puts ${geom::pi}                ;; qualified substitution is always braced
+puts [geom::double 21]
+puts ${geom::inner::y}
+import geom double
+puts [double 4]
+
+proc even? {n} { if [== $n 0] {1} else {::odd? [- $n 1]} }
+proc odd? {n} { if [== $n 0] {0} else {::even? [- $n 1]} }
+puts [odd? 13]
+
+;; ============================================================================
+;; Control flow
+;; ============================================================================
+
+if [< $x 20] { puts "small" } else { puts "big" }
+
+let sign [cond [< $x 0] "negative" [== $x 0] "zero" else "positive"]
+puts $sign
+
+let op "sub"
+puts [case $op {add} [+ 5 3] {sub} [- 5 3] else "unknown op"]
+
+var i 3
+while {$i} { set! i [- $i 1] }
+for {var j 0} {[< $j 3]} {set! j [+ $j 1]} { puts "j = $j" }
+foreach item (a b c) { puts $item }
+foreach kv #{k1 v1} { puts "[get $kv 0]=[get $kv 1]" }
+repeat 2 { puts "again" }
+foreach n (1 2 3 4 5) {
+    if [== $n 2] { continue }
+    if [== $n 4] { break }
+    puts $n
+}
+
+;; ============================================================================
+;; Data: lists, dicts, strings, brace literals
+;; ============================================================================
+
+let lst (a b c)
+let nested ((1 2)
+            (3 4))              ;; newlines are whitespace inside (...)
+let d #{name "Alice" age 30
+        tags (x y)}
+puts [get $d name]
+puts [-> $d {get age} {+ 1}]    ;; threading
+puts [->> 3 {- 10}]
+puts [List::map (1 2 3) [lambda {x} { * $x 2 }]]
+puts [String::join (a b c) "-"]
+puts "escapes: tab\t newline\\n quote\" bracket\[ hex\x41 octal\101"
+puts "multi
+line"
+puts [+ 1 2 3 \
+        4]                      ;; line continuation
+
+;; Braces are text.  Balanced contents parse as code for highlighting;
+;; contents that cannot be code stay opaque literals.
+let regex {^[a-z]+:[0-9]+$}
+let shell {awk '{print $1}' data.txt}
+let msg {unmatched '['}
+let quoted {say "hi}
+puts [len {a b c}]              ;; 5: a five-character string, not a list
+
+;; ============================================================================
+;; Metaprogramming
+;; ============================================================================
+
+let qx 10
+puts [quasiquote { + ,$qx ,[+ 1 2] ,@$args \, }]
+
+macro defn {name params body} {
+    quasiquote {
+        proc ,$name {,@$params} {,$body}
+    }
+}
+defn greet (who) { "Hello, $who!" }
+puts [greet "World"]
+
+let rc [catch { error "boom" } res err]
+puts "caught: $rc $err"

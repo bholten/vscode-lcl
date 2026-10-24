@@ -1,0 +1,151 @@
+;; SYNTAX TEST "source.lcl" "Lcl word rules"
+
+
+;; Bindings: names are unrestricted words; numbers follow the strict literal grammar
+let max-len 42
+;;<-- storage.type.lcl
+;;  ^^^^^^^ variable.other.definition.lcl
+;;          ^^ constant.numeric.integer.lcl
+var counter 0
+;;<-- storage.type.lcl
+;;  ^^^^^^^ variable.other.definition.lcl
+set! counter [+ $counter 1]
+;;<--- storage.type.lcl
+;;            ^ keyword.operator.lcl
+;;              ^^^^^^^^ variable.other.lcl
+let f 3.14e-2
+;;    ^^^^^^^ constant.numeric.float.lcl
+let not-numbers 007 -0 +5 .5
+;;              ^^^ - constant.numeric
+;;                  ^^ - constant.numeric
+;;                     ^^ - constant.numeric
+;;                        ^^ - constant.numeric
+let neg -7
+;;      ^^ constant.numeric.integer.lcl
+
+;; $name is POSIX-shaped and stops at - ? !; ${...} takes qualified names;
+;; a $ not followed by a name start or { is literal text
+puts "$max-len ${max-len} ${geom::pi} ${done?} $5 $"
+;;    ^^^^ variable.other.lcl
+;;        ^^^^ string.quoted.double.lcl - variable
+;;             ^^^^^^^^^^ variable.other.qualified.lcl
+;;                        ^^^^^^^^^^^ variable.other.qualified.lcl
+;;                                    ^^^^^^^^ variable.other.qualified.lcl
+;;                                             ^^ string.quoted.double.lcl - variable
+;;                                                ^^ string.quoted.double.lcl - variable
+puts ${1bad}
+;;   ^^^^^^^ invalid.illegal.variable.lcl
+
+;; Strings: escapes, nested subcommands, balanced braces
+puts "tab\t quote\" bracket\[ hex\x41 oct\101 [len "x"] {a b}"
+;;       ^^ constant.character.escape.lcl
+;;               ^^ constant.character.escape.lcl
+;;                         ^^ constant.character.escape.lcl
+;;                               ^^^^ constant.character.escape.lcl
+;;                                       ^^^^ constant.character.escape.lcl
+;;                                            ^ punctuation.section.brackets.begin.lcl
+;;                                             ^^^ support.function.builtin.lcl
+;;                                                 ^^^ string.quoted.double.lcl
+;;                                                    ^ punctuation.section.brackets.end.lcl
+;;                                                      ^^^^^ string.quoted.double.lcl
+;;                                                   ^ punctuation.definition.string.end.lcl
+
+;; Command heads: calls, builtins, operators, qualified names
+frobnicate 1; List::push $xs 2
+;;<--------- entity.name.function.call.lcl
+;;            ^^^^^^^^^^ entity.name.function.qualified.lcl
+puts [geom::double 21]
+;;<--- support.function.builtin.lcl
+;;    ^^^^^^^^^^^^ entity.name.function.qualified.lcl
+::odd? 3
+;;<----- entity.name.function.qualified.lcl
+-> $d {get age} {+ 1}
+;;<- keyword.operator.lcl
+;;     ^^^ support.function.builtin.lcl
+;;               ^ keyword.operator.lcl
+if [< $x 0] {1} else {0}
+;;<- keyword.control.conditional.lcl
+;;  ^ keyword.operator.lcl
+;;           ^ constant.numeric.integer.lcl
+;;              ^^^^ keyword.control.conditional.lcl
+puts [not-same? $a $b]
+;;    ^^^^^^^^^ support.function.builtin.lcl
+puts [not $a]
+;;    ^^^ keyword.operator.logical.lcl
+if 1 {1} {0}
+;;    ^ constant.numeric.integer.lcl
+
+;; Definitions
+proc add-one {n (m 0) *rest} { + $n 1 }
+;;<--- storage.type.function.lcl
+;;   ^^^^^^^ entity.name.function.lcl
+;;            ^ variable.parameter.lcl
+;;               ^ variable.parameter.lcl
+;;                 ^ constant.numeric.integer.lcl
+;;                    ^^^^^ variable.parameter.lcl
+;;                           ^ punctuation.section.block.begin.lcl
+;;                             ^ keyword.operator.lcl
+macro defn {name params body} { quasiquote { proc ,$name {,@$params} {,$body} } }
+;;<---- storage.type.function.lcl
+;;    ^^^^ entity.name.function.lcl
+;;          ^^^^ variable.parameter.lcl
+;;                              ^^^^^^^^^^ keyword.other.eval.lcl
+;;                                           ^^^^ storage.type.function.lcl
+;;                                                ^ keyword.operator.unquote.lcl
+;;                                                 ^^^^^ variable.other.lcl
+;;                                                        ^ keyword.operator.unquote.lcl
+;;                                                         ^ keyword.operator.spread.lcl
+;;                                                          ^^^^^^^ variable.other.lcl
+let c [lambda {x y} { * $x $y }]
+;;     ^^^^^^ storage.type.function.lcl
+;;             ^ variable.parameter.lcl
+;;               ^ variable.parameter.lcl
+foreach item (a b c) { puts $item }
+;;<------ keyword.control.loop.lcl
+;;      ^^^^ variable.other.definition.lcl
+namespace geom { let pi 3 }
+;;<-------- storage.type.namespace.lcl
+;;        ^^^^ entity.name.namespace.lcl
+import geom double
+;;<----- keyword.control.import.lcl
+;;     ^^^^ entity.name.namespace.lcl
+
+;; Prefixes: @ spreads, , and ,, unquote, but {,} is a word
+puts [padd @$args @[list 1 2]]
+;;         ^ keyword.operator.spread.lcl
+;;                ^ keyword.operator.spread.lcl
+quasiquote { ,$x ,,$y {,} }
+;;           ^ keyword.operator.unquote.lcl
+;;               ^^ keyword.operator.unquote.lcl
+;;                    ^^^ - keyword.operator.unquote.lcl
+
+;; Dicts and lists hold words, not commands
+let d #{name "Alice" age 30 tags (x y)}
+;;    ^^ punctuation.section.dict.begin.lcl
+;;      ^^^^ - entity.name.function
+;;           ^^^^^^^ string.quoted.double.lcl
+;;                       ^^ constant.numeric.integer.lcl
+;;                               ^ punctuation.section.parens.begin.lcl
+;;                                   ^ punctuation.section.parens.end.lcl
+;;                                    ^ punctuation.section.dict.end.lcl
+
+;; Comments: ;;; is documentation. Inside a block a comment ends at an
+;; unbalanced } (Lcl finds the block extent first); balanced braces are fine
+;;; doc comment with } and ) in it
+;;<--------------------------------- comment.line.documentation.lcl
+proc f {} { ;; returns {a b} }
+;;          ^^^^^^^^^^^^^^^^ comment.line.double-semicolon.lcl
+;;                           ^ punctuation.section.block.end.lcl
+puts [+ 1 2 \
+;;          ^ punctuation.separator.continuation.lcl
+        3]
+;;      ^ constant.numeric.integer.lcl
+
+;; Brace literals that cannot be code must not derail what follows
+let regex {^[a-z]+:[0-9]+$}
+let shell {awk '{print $1}' data.txt}
+let msg {unmatched '['}
+let quoted {say "hi}
+puts after
+;;<--- support.function.builtin.lcl
+;;   ^^^^^ - meta.block meta.subcommand string

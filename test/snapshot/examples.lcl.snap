@@ -1,0 +1,1273 @@
+>;;; Lcl syntax tour used to exercise the tree-sitter grammar.
+#^^^ source.lcl comment.line.documentation.lcl punctuation.definition.comment.lcl
+#   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl comment.line.documentation.lcl
+>;;;
+#^^^ source.lcl comment.line.documentation.lcl punctuation.definition.comment.lcl
+>;;; Every construct here is valid Lcl (run it with `lcl examples.lcl`),
+#^^^ source.lcl comment.line.documentation.lcl punctuation.definition.comment.lcl
+#   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl comment.line.documentation.lcl
+>;;; and the file must parse without ERROR nodes: `tree-sitter parse
+#^^^ source.lcl comment.line.documentation.lcl punctuation.definition.comment.lcl
+#   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl comment.line.documentation.lcl
+>;;; examples.lcl`.
+#^^^ source.lcl comment.line.documentation.lcl punctuation.definition.comment.lcl
+#   ^^^^^^^^^^^^^^^ source.lcl comment.line.documentation.lcl
+>
+>;; ============================================================================
+#^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>;; Bindings and names
+#^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#  ^^^^^^^^^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>;; ============================================================================
+#^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>
+>let x 10                        ;; immutable binding, typed int
+#^^^ source.lcl storage.type.lcl
+#   ^ source.lcl
+#    ^ source.lcl variable.other.definition.lcl
+#     ^ source.lcl
+#      ^^ source.lcl constant.numeric.integer.lcl
+#        ^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl
+#                                ^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>var counter 0                   ;; mutable cell
+#^^^ source.lcl storage.type.lcl
+#   ^ source.lcl
+#    ^^^^^^^ source.lcl variable.other.definition.lcl
+#           ^ source.lcl
+#            ^ source.lcl constant.numeric.integer.lcl
+#             ^^^^^^^^^^^^^^^^^^^ source.lcl
+#                                ^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#                                  ^^^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>set! counter [+ $counter $x]
+#^^^^ source.lcl storage.type.lcl
+#    ^ source.lcl
+#     ^^^^^^^ source.lcl variable.other.definition.lcl
+#            ^ source.lcl
+#             ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#              ^ source.lcl meta.subcommand.lcl keyword.operator.lcl
+#               ^ source.lcl meta.subcommand.lcl
+#                ^ source.lcl meta.subcommand.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                 ^^^^^^^ source.lcl meta.subcommand.lcl variable.other.lcl
+#                        ^ source.lcl meta.subcommand.lcl
+#                         ^ source.lcl meta.subcommand.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                          ^ source.lcl meta.subcommand.lcl variable.other.lcl
+#                           ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+>let max-len 42                  ;; kebab-case binding names are ordinary words
+#^^^ source.lcl storage.type.lcl
+#   ^ source.lcl
+#    ^^^^^^^ source.lcl variable.other.definition.lcl
+#           ^ source.lcl
+#            ^^ source.lcl constant.numeric.integer.lcl
+#              ^^^^^^^^^^^^^^^^^^ source.lcl
+#                                ^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>let done? 1
+#^^^ source.lcl storage.type.lcl
+#   ^ source.lcl
+#    ^^^^^ source.lcl variable.other.definition.lcl
+#         ^ source.lcl
+#          ^ source.lcl constant.numeric.integer.lcl
+>puts "counter = $counter, max-len = ${max-len}, done? = ${done?}"
+#^^^^ source.lcl support.function.builtin.lcl
+#    ^ source.lcl
+#     ^ source.lcl string.quoted.double.lcl punctuation.definition.string.begin.lcl
+#      ^^^^^^^^^^ source.lcl string.quoted.double.lcl
+#                ^ source.lcl string.quoted.double.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                 ^^^^^^^ source.lcl string.quoted.double.lcl variable.other.lcl
+#                        ^^^^^^^^^^^^ source.lcl string.quoted.double.lcl
+#                                    ^^ source.lcl string.quoted.double.lcl variable.other.qualified.lcl punctuation.definition.variable.begin.lcl
+#                                      ^^^^^^^ source.lcl string.quoted.double.lcl variable.other.qualified.lcl
+#                                             ^ source.lcl string.quoted.double.lcl variable.other.qualified.lcl punctuation.definition.variable.end.lcl
+#                                              ^^^^^^^^^^ source.lcl string.quoted.double.lcl
+#                                                        ^^ source.lcl string.quoted.double.lcl variable.other.qualified.lcl punctuation.definition.variable.begin.lcl
+#                                                          ^^^^^ source.lcl string.quoted.double.lcl variable.other.qualified.lcl
+#                                                               ^ source.lcl string.quoted.double.lcl variable.other.qualified.lcl punctuation.definition.variable.end.lcl
+#                                                                ^ source.lcl string.quoted.double.lcl punctuation.definition.string.end.lcl
+>puts "bare \$name stops at - ? !, so \$max-len would be \$max then -len"
+#^^^^ source.lcl support.function.builtin.lcl
+#    ^ source.lcl
+#     ^ source.lcl string.quoted.double.lcl punctuation.definition.string.begin.lcl
+#      ^^^^^ source.lcl string.quoted.double.lcl
+#           ^^ source.lcl string.quoted.double.lcl constant.character.escape.lcl
+#             ^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl string.quoted.double.lcl
+#                                     ^^ source.lcl string.quoted.double.lcl constant.character.escape.lcl
+#                                       ^^^^^^^^^^^^^^^^^ source.lcl string.quoted.double.lcl
+#                                                        ^^ source.lcl string.quoted.double.lcl constant.character.escape.lcl
+#                                                          ^^^^^^^^^^^^^ source.lcl string.quoted.double.lcl
+#                                                                       ^ source.lcl string.quoted.double.lcl punctuation.definition.string.end.lcl
+>puts "literal dollars: cost $5, [$#] and $ alone"
+#^^^^ source.lcl support.function.builtin.lcl
+#    ^ source.lcl
+#     ^ source.lcl string.quoted.double.lcl punctuation.definition.string.begin.lcl
+#      ^^^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl string.quoted.double.lcl
+#                                ^ source.lcl string.quoted.double.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#                                 ^^ source.lcl string.quoted.double.lcl meta.subcommand.lcl
+#                                   ^ source.lcl string.quoted.double.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#                                    ^^^^^^^^^^^^ source.lcl string.quoted.double.lcl
+#                                                ^ source.lcl string.quoted.double.lcl punctuation.definition.string.end.lcl
+>
+>;; ============================================================================
+#^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>;; Procedures, lambdas, closures
+#^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>;; ============================================================================
+#^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>
+>;;; Adds one to its argument.
+#^^^ source.lcl comment.line.documentation.lcl punctuation.definition.comment.lcl
+#   ^^^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl comment.line.documentation.lcl
+>proc add-one {n} { + $n 1 }
+#^^^^ source.lcl meta.function.lcl storage.type.function.lcl
+#    ^ source.lcl meta.function.lcl
+#     ^^^^^^^ source.lcl meta.function.lcl entity.name.function.lcl
+#            ^ source.lcl meta.function.lcl
+#             ^ source.lcl meta.function.lcl punctuation.section.parameters.begin.lcl
+#              ^ source.lcl meta.function.lcl meta.function.parameters.lcl variable.parameter.lcl
+#               ^ source.lcl meta.function.lcl punctuation.section.parameters.end.lcl
+#                ^ source.lcl
+#                 ^ source.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#                  ^ source.lcl meta.block.lcl
+#                   ^ source.lcl meta.block.lcl keyword.operator.lcl
+#                    ^ source.lcl meta.block.lcl
+#                     ^ source.lcl meta.block.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                      ^ source.lcl meta.block.lcl variable.other.lcl
+#                       ^ source.lcl meta.block.lcl
+#                        ^ source.lcl meta.block.lcl constant.numeric.integer.lcl
+#                         ^ source.lcl meta.block.lcl
+#                          ^ source.lcl meta.block.lcl punctuation.section.block.end.lcl
+>
+>proc padd {a b (c 0) *rest} { + $a $b $c [len $rest] }
+#^^^^ source.lcl meta.function.lcl storage.type.function.lcl
+#    ^ source.lcl meta.function.lcl
+#     ^^^^ source.lcl meta.function.lcl entity.name.function.lcl
+#         ^ source.lcl meta.function.lcl
+#          ^ source.lcl meta.function.lcl punctuation.section.parameters.begin.lcl
+#           ^ source.lcl meta.function.lcl meta.function.parameters.lcl variable.parameter.lcl
+#            ^ source.lcl meta.function.lcl meta.function.parameters.lcl
+#             ^ source.lcl meta.function.lcl meta.function.parameters.lcl variable.parameter.lcl
+#              ^ source.lcl meta.function.lcl meta.function.parameters.lcl
+#               ^ source.lcl meta.function.lcl meta.function.parameters.lcl meta.parameter.optional.lcl punctuation.section.parens.begin.lcl
+#                ^ source.lcl meta.function.lcl meta.function.parameters.lcl meta.parameter.optional.lcl variable.parameter.lcl
+#                 ^ source.lcl meta.function.lcl meta.function.parameters.lcl meta.parameter.optional.lcl
+#                  ^ source.lcl meta.function.lcl meta.function.parameters.lcl meta.parameter.optional.lcl constant.numeric.integer.lcl
+#                   ^ source.lcl meta.function.lcl meta.function.parameters.lcl meta.parameter.optional.lcl punctuation.section.parens.end.lcl
+#                    ^ source.lcl meta.function.lcl meta.function.parameters.lcl
+#                     ^^^^^ source.lcl meta.function.lcl meta.function.parameters.lcl variable.parameter.lcl
+#                          ^ source.lcl meta.function.lcl punctuation.section.parameters.end.lcl
+#                           ^ source.lcl
+#                            ^ source.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#                             ^ source.lcl meta.block.lcl
+#                              ^ source.lcl meta.block.lcl keyword.operator.lcl
+#                               ^ source.lcl meta.block.lcl
+#                                ^ source.lcl meta.block.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                                 ^ source.lcl meta.block.lcl variable.other.lcl
+#                                  ^ source.lcl meta.block.lcl
+#                                   ^ source.lcl meta.block.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                                    ^ source.lcl meta.block.lcl variable.other.lcl
+#                                     ^ source.lcl meta.block.lcl
+#                                      ^ source.lcl meta.block.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                                       ^ source.lcl meta.block.lcl variable.other.lcl
+#                                        ^ source.lcl meta.block.lcl
+#                                         ^ source.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#                                          ^^^ source.lcl meta.block.lcl meta.subcommand.lcl support.function.builtin.lcl
+#                                             ^ source.lcl meta.block.lcl meta.subcommand.lcl
+#                                              ^ source.lcl meta.block.lcl meta.subcommand.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                                               ^^^^ source.lcl meta.block.lcl meta.subcommand.lcl variable.other.lcl
+#                                                   ^ source.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#                                                    ^ source.lcl meta.block.lcl
+#                                                     ^ source.lcl meta.block.lcl punctuation.section.block.end.lcl
+>
+>proc make_counter {start} {
+#^^^^ source.lcl meta.function.lcl storage.type.function.lcl
+#    ^ source.lcl meta.function.lcl
+#     ^^^^^^^^^^^^ source.lcl meta.function.lcl entity.name.function.lcl
+#                 ^ source.lcl meta.function.lcl
+#                  ^ source.lcl meta.function.lcl punctuation.section.parameters.begin.lcl
+#                   ^^^^^ source.lcl meta.function.lcl meta.function.parameters.lcl variable.parameter.lcl
+#                        ^ source.lcl meta.function.lcl punctuation.section.parameters.end.lcl
+#                         ^ source.lcl
+#                          ^ source.lcl meta.block.lcl punctuation.section.block.begin.lcl
+>    var n $start
+#^^^^ source.lcl meta.block.lcl
+#    ^^^ source.lcl meta.block.lcl storage.type.lcl
+#       ^ source.lcl meta.block.lcl
+#        ^ source.lcl meta.block.lcl variable.other.definition.lcl
+#         ^ source.lcl meta.block.lcl
+#          ^ source.lcl meta.block.lcl variable.other.lcl punctuation.definition.variable.lcl
+#           ^^^^^ source.lcl meta.block.lcl variable.other.lcl
+>    lambda {} { set! n [+ $n 1]; $n }
+#^^^^ source.lcl meta.block.lcl meta.function.lambda.lcl
+#    ^^^^^^ source.lcl meta.block.lcl meta.function.lambda.lcl storage.type.function.lcl
+#          ^ source.lcl meta.block.lcl meta.function.lambda.lcl
+#           ^ source.lcl meta.block.lcl meta.function.lambda.lcl punctuation.section.parameters.begin.lcl
+#            ^ source.lcl meta.block.lcl meta.function.lambda.lcl punctuation.section.parameters.end.lcl
+#             ^ source.lcl meta.block.lcl
+#              ^ source.lcl meta.block.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#               ^ source.lcl meta.block.lcl meta.block.lcl
+#                ^^^^ source.lcl meta.block.lcl meta.block.lcl storage.type.lcl
+#                    ^ source.lcl meta.block.lcl meta.block.lcl
+#                     ^ source.lcl meta.block.lcl meta.block.lcl variable.other.definition.lcl
+#                      ^ source.lcl meta.block.lcl meta.block.lcl
+#                       ^ source.lcl meta.block.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#                        ^ source.lcl meta.block.lcl meta.block.lcl meta.subcommand.lcl keyword.operator.lcl
+#                         ^ source.lcl meta.block.lcl meta.block.lcl meta.subcommand.lcl
+#                          ^ source.lcl meta.block.lcl meta.block.lcl meta.subcommand.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                           ^ source.lcl meta.block.lcl meta.block.lcl meta.subcommand.lcl variable.other.lcl
+#                            ^ source.lcl meta.block.lcl meta.block.lcl meta.subcommand.lcl
+#                             ^ source.lcl meta.block.lcl meta.block.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#                              ^ source.lcl meta.block.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#                               ^^ source.lcl meta.block.lcl meta.block.lcl
+#                                 ^ source.lcl meta.block.lcl meta.block.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                                  ^ source.lcl meta.block.lcl meta.block.lcl variable.other.lcl
+#                                   ^ source.lcl meta.block.lcl meta.block.lcl
+#                                    ^ source.lcl meta.block.lcl meta.block.lcl punctuation.section.block.end.lcl
+>}
+#^ source.lcl meta.block.lcl punctuation.section.block.end.lcl
+>
+>let c [make_counter 10]
+#^^^ source.lcl storage.type.lcl
+#   ^ source.lcl
+#    ^ source.lcl variable.other.definition.lcl
+#     ^ source.lcl
+#      ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#       ^^^^^^^^^^^^ source.lcl meta.subcommand.lcl entity.name.function.call.lcl
+#                   ^ source.lcl meta.subcommand.lcl
+#                    ^^ source.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#                      ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+>puts [apply $c]                 ;; 11 -- `[$c]` would just return the closure
+#^^^^ source.lcl support.function.builtin.lcl
+#    ^ source.lcl
+#     ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#      ^^^^^ source.lcl meta.subcommand.lcl support.function.builtin.lcl
+#           ^ source.lcl meta.subcommand.lcl
+#            ^ source.lcl meta.subcommand.lcl variable.other.lcl punctuation.definition.variable.lcl
+#             ^ source.lcl meta.subcommand.lcl variable.other.lcl
+#              ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#               ^^^^^^^^^^^^^^^^^ source.lcl
+#                                ^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>puts [apply ${add-one} 41]
+#^^^^ source.lcl support.function.builtin.lcl
+#    ^ source.lcl
+#     ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#      ^^^^^ source.lcl meta.subcommand.lcl support.function.builtin.lcl
+#           ^ source.lcl meta.subcommand.lcl
+#            ^^ source.lcl meta.subcommand.lcl variable.other.qualified.lcl punctuation.definition.variable.begin.lcl
+#              ^^^^^^^ source.lcl meta.subcommand.lcl variable.other.qualified.lcl
+#                     ^ source.lcl meta.subcommand.lcl variable.other.qualified.lcl punctuation.definition.variable.end.lcl
+#                      ^ source.lcl meta.subcommand.lcl
+#                       ^^ source.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#                         ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+>let args (1 2 3)
+#^^^ source.lcl storage.type.lcl
+#   ^ source.lcl
+#    ^^^^ source.lcl variable.other.definition.lcl
+#        ^ source.lcl
+#         ^ source.lcl meta.list.lcl punctuation.section.parens.begin.lcl
+#          ^ source.lcl meta.list.lcl constant.numeric.integer.lcl
+#           ^ source.lcl meta.list.lcl
+#            ^ source.lcl meta.list.lcl constant.numeric.integer.lcl
+#             ^ source.lcl meta.list.lcl
+#              ^ source.lcl meta.list.lcl constant.numeric.integer.lcl
+#               ^ source.lcl meta.list.lcl punctuation.section.parens.end.lcl
+>puts [padd @$args]              ;; @ spreads a list as arguments
+#^^^^ source.lcl support.function.builtin.lcl
+#    ^ source.lcl
+#     ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#      ^^^^ source.lcl meta.subcommand.lcl entity.name.function.call.lcl
+#          ^ source.lcl meta.subcommand.lcl
+#           ^ source.lcl meta.subcommand.lcl keyword.operator.spread.lcl
+#            ^ source.lcl meta.subcommand.lcl variable.other.lcl punctuation.definition.variable.lcl
+#             ^^^^ source.lcl meta.subcommand.lcl variable.other.lcl
+#                 ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#                  ^^^^^^^^^^^^^^ source.lcl
+#                                ^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>puts [padd @[list 4 5] 6]
+#^^^^ source.lcl support.function.builtin.lcl
+#    ^ source.lcl
+#     ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#      ^^^^ source.lcl meta.subcommand.lcl entity.name.function.call.lcl
+#          ^ source.lcl meta.subcommand.lcl
+#           ^ source.lcl meta.subcommand.lcl keyword.operator.spread.lcl
+#            ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#             ^^^^ source.lcl meta.subcommand.lcl meta.subcommand.lcl support.function.builtin.lcl
+#                 ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl
+#                  ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#                   ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl
+#                    ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#                     ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#                      ^ source.lcl meta.subcommand.lcl
+#                       ^ source.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#                        ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+>
+>;; ============================================================================
+#^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>;; Namespaces
+#^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#  ^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>;; ============================================================================
+#^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>
+>namespace geom {
+#^^^^^^^^^ source.lcl storage.type.namespace.lcl
+#         ^ source.lcl
+#          ^^^^ source.lcl entity.name.namespace.lcl
+#              ^ source.lcl
+#               ^ source.lcl meta.block.lcl punctuation.section.block.begin.lcl
+>    ;;; Circle constant.
+#^^^^ source.lcl meta.block.lcl
+#    ^^^ source.lcl meta.block.lcl comment.line.documentation.lcl punctuation.definition.comment.lcl
+#       ^^^^^^^^^^^^^^^^^ source.lcl meta.block.lcl comment.line.documentation.lcl
+>    let pi 3.14159
+#^^^^ source.lcl meta.block.lcl
+#    ^^^ source.lcl meta.block.lcl storage.type.lcl
+#       ^ source.lcl meta.block.lcl
+#        ^^ source.lcl meta.block.lcl variable.other.definition.lcl
+#          ^ source.lcl meta.block.lcl
+#           ^^^^^^^ source.lcl meta.block.lcl constant.numeric.float.lcl
+>    proc double {x} { + $x $x }
+#^^^^ source.lcl meta.block.lcl meta.function.lcl
+#    ^^^^ source.lcl meta.block.lcl meta.function.lcl storage.type.function.lcl
+#        ^ source.lcl meta.block.lcl meta.function.lcl
+#         ^^^^^^ source.lcl meta.block.lcl meta.function.lcl entity.name.function.lcl
+#               ^ source.lcl meta.block.lcl meta.function.lcl
+#                ^ source.lcl meta.block.lcl meta.function.lcl punctuation.section.parameters.begin.lcl
+#                 ^ source.lcl meta.block.lcl meta.function.lcl meta.function.parameters.lcl variable.parameter.lcl
+#                  ^ source.lcl meta.block.lcl meta.function.lcl punctuation.section.parameters.end.lcl
+#                   ^ source.lcl meta.block.lcl
+#                    ^ source.lcl meta.block.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#                     ^ source.lcl meta.block.lcl meta.block.lcl
+#                      ^ source.lcl meta.block.lcl meta.block.lcl keyword.operator.lcl
+#                       ^ source.lcl meta.block.lcl meta.block.lcl
+#                        ^ source.lcl meta.block.lcl meta.block.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                         ^ source.lcl meta.block.lcl meta.block.lcl variable.other.lcl
+#                          ^ source.lcl meta.block.lcl meta.block.lcl
+#                           ^ source.lcl meta.block.lcl meta.block.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                            ^ source.lcl meta.block.lcl meta.block.lcl variable.other.lcl
+#                             ^ source.lcl meta.block.lcl meta.block.lcl
+#                              ^ source.lcl meta.block.lcl meta.block.lcl punctuation.section.block.end.lcl
+>    namespace inner {
+#^^^^ source.lcl meta.block.lcl
+#    ^^^^^^^^^ source.lcl meta.block.lcl storage.type.namespace.lcl
+#             ^ source.lcl meta.block.lcl
+#              ^^^^^ source.lcl meta.block.lcl entity.name.namespace.lcl
+#                   ^ source.lcl meta.block.lcl
+#                    ^ source.lcl meta.block.lcl meta.block.lcl punctuation.section.block.begin.lcl
+>        let y 2
+#^^^^^^^^ source.lcl meta.block.lcl meta.block.lcl
+#        ^^^ source.lcl meta.block.lcl meta.block.lcl storage.type.lcl
+#           ^ source.lcl meta.block.lcl meta.block.lcl
+#            ^ source.lcl meta.block.lcl meta.block.lcl variable.other.definition.lcl
+#             ^ source.lcl meta.block.lcl meta.block.lcl
+#              ^ source.lcl meta.block.lcl meta.block.lcl constant.numeric.integer.lcl
+>    }
+#^^^^ source.lcl meta.block.lcl meta.block.lcl
+#    ^ source.lcl meta.block.lcl meta.block.lcl punctuation.section.block.end.lcl
+>}
+#^ source.lcl meta.block.lcl punctuation.section.block.end.lcl
+>
+>puts ${geom::pi}                ;; qualified substitution is always braced
+#^^^^ source.lcl support.function.builtin.lcl
+#    ^ source.lcl
+#     ^^ source.lcl variable.other.qualified.lcl punctuation.definition.variable.begin.lcl
+#       ^^^^^^^^ source.lcl variable.other.qualified.lcl
+#               ^ source.lcl variable.other.qualified.lcl punctuation.definition.variable.end.lcl
+#                ^^^^^^^^^^^^^^^^ source.lcl
+#                                ^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>puts [geom::double 21]
+#^^^^ source.lcl support.function.builtin.lcl
+#    ^ source.lcl
+#     ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#      ^^^^^^^^^^^^ source.lcl meta.subcommand.lcl entity.name.function.qualified.lcl
+#                  ^ source.lcl meta.subcommand.lcl
+#                   ^^ source.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#                     ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+>puts ${geom::inner::y}
+#^^^^ source.lcl support.function.builtin.lcl
+#    ^ source.lcl
+#     ^^ source.lcl variable.other.qualified.lcl punctuation.definition.variable.begin.lcl
+#       ^^^^^^^^^^^^^^ source.lcl variable.other.qualified.lcl
+#                     ^ source.lcl variable.other.qualified.lcl punctuation.definition.variable.end.lcl
+>import geom double
+#^^^^^^ source.lcl keyword.control.import.lcl
+#      ^ source.lcl
+#       ^^^^ source.lcl entity.name.namespace.lcl
+#           ^^^^^^^^ source.lcl
+>puts [double 4]
+#^^^^ source.lcl support.function.builtin.lcl
+#    ^ source.lcl
+#     ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#      ^^^^^^ source.lcl meta.subcommand.lcl entity.name.function.call.lcl
+#            ^ source.lcl meta.subcommand.lcl
+#             ^ source.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#              ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+>
+>proc even? {n} { if [== $n 0] {1} else {::odd? [- $n 1]} }
+#^^^^ source.lcl meta.function.lcl storage.type.function.lcl
+#    ^ source.lcl meta.function.lcl
+#     ^^^^^ source.lcl meta.function.lcl entity.name.function.lcl
+#          ^ source.lcl meta.function.lcl
+#           ^ source.lcl meta.function.lcl punctuation.section.parameters.begin.lcl
+#            ^ source.lcl meta.function.lcl meta.function.parameters.lcl variable.parameter.lcl
+#             ^ source.lcl meta.function.lcl punctuation.section.parameters.end.lcl
+#              ^ source.lcl
+#               ^ source.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#                ^ source.lcl meta.block.lcl
+#                 ^^ source.lcl meta.block.lcl keyword.control.conditional.lcl
+#                   ^ source.lcl meta.block.lcl
+#                    ^ source.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#                     ^^ source.lcl meta.block.lcl meta.subcommand.lcl keyword.operator.lcl
+#                       ^ source.lcl meta.block.lcl meta.subcommand.lcl
+#                        ^ source.lcl meta.block.lcl meta.subcommand.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                         ^ source.lcl meta.block.lcl meta.subcommand.lcl variable.other.lcl
+#                          ^ source.lcl meta.block.lcl meta.subcommand.lcl
+#                           ^ source.lcl meta.block.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#                            ^ source.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#                             ^ source.lcl meta.block.lcl
+#                              ^ source.lcl meta.block.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#                               ^ source.lcl meta.block.lcl meta.block.lcl constant.numeric.integer.lcl
+#                                ^ source.lcl meta.block.lcl meta.block.lcl punctuation.section.block.end.lcl
+#                                 ^ source.lcl meta.block.lcl
+#                                  ^^^^ source.lcl meta.block.lcl keyword.control.conditional.lcl
+#                                      ^ source.lcl meta.block.lcl
+#                                       ^ source.lcl meta.block.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#                                        ^^^^^^ source.lcl meta.block.lcl meta.block.lcl entity.name.function.qualified.lcl
+#                                              ^ source.lcl meta.block.lcl meta.block.lcl
+#                                               ^ source.lcl meta.block.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#                                                ^ source.lcl meta.block.lcl meta.block.lcl meta.subcommand.lcl keyword.operator.lcl
+#                                                 ^ source.lcl meta.block.lcl meta.block.lcl meta.subcommand.lcl
+#                                                  ^ source.lcl meta.block.lcl meta.block.lcl meta.subcommand.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                                                   ^ source.lcl meta.block.lcl meta.block.lcl meta.subcommand.lcl variable.other.lcl
+#                                                    ^ source.lcl meta.block.lcl meta.block.lcl meta.subcommand.lcl
+#                                                     ^ source.lcl meta.block.lcl meta.block.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#                                                      ^ source.lcl meta.block.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#                                                       ^ source.lcl meta.block.lcl meta.block.lcl punctuation.section.block.end.lcl
+#                                                        ^ source.lcl meta.block.lcl
+#                                                         ^ source.lcl meta.block.lcl punctuation.section.block.end.lcl
+>proc odd? {n} { if [== $n 0] {0} else {::even? [- $n 1]} }
+#^^^^ source.lcl meta.function.lcl storage.type.function.lcl
+#    ^ source.lcl meta.function.lcl
+#     ^^^^ source.lcl meta.function.lcl entity.name.function.lcl
+#         ^ source.lcl meta.function.lcl
+#          ^ source.lcl meta.function.lcl punctuation.section.parameters.begin.lcl
+#           ^ source.lcl meta.function.lcl meta.function.parameters.lcl variable.parameter.lcl
+#            ^ source.lcl meta.function.lcl punctuation.section.parameters.end.lcl
+#             ^ source.lcl
+#              ^ source.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#               ^ source.lcl meta.block.lcl
+#                ^^ source.lcl meta.block.lcl keyword.control.conditional.lcl
+#                  ^ source.lcl meta.block.lcl
+#                   ^ source.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#                    ^^ source.lcl meta.block.lcl meta.subcommand.lcl keyword.operator.lcl
+#                      ^ source.lcl meta.block.lcl meta.subcommand.lcl
+#                       ^ source.lcl meta.block.lcl meta.subcommand.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                        ^ source.lcl meta.block.lcl meta.subcommand.lcl variable.other.lcl
+#                         ^ source.lcl meta.block.lcl meta.subcommand.lcl
+#                          ^ source.lcl meta.block.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#                           ^ source.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#                            ^ source.lcl meta.block.lcl
+#                             ^ source.lcl meta.block.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#                              ^ source.lcl meta.block.lcl meta.block.lcl constant.numeric.integer.lcl
+#                               ^ source.lcl meta.block.lcl meta.block.lcl punctuation.section.block.end.lcl
+#                                ^ source.lcl meta.block.lcl
+#                                 ^^^^ source.lcl meta.block.lcl keyword.control.conditional.lcl
+#                                     ^ source.lcl meta.block.lcl
+#                                      ^ source.lcl meta.block.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#                                       ^^^^^^^ source.lcl meta.block.lcl meta.block.lcl entity.name.function.qualified.lcl
+#                                              ^ source.lcl meta.block.lcl meta.block.lcl
+#                                               ^ source.lcl meta.block.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#                                                ^ source.lcl meta.block.lcl meta.block.lcl meta.subcommand.lcl keyword.operator.lcl
+#                                                 ^ source.lcl meta.block.lcl meta.block.lcl meta.subcommand.lcl
+#                                                  ^ source.lcl meta.block.lcl meta.block.lcl meta.subcommand.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                                                   ^ source.lcl meta.block.lcl meta.block.lcl meta.subcommand.lcl variable.other.lcl
+#                                                    ^ source.lcl meta.block.lcl meta.block.lcl meta.subcommand.lcl
+#                                                     ^ source.lcl meta.block.lcl meta.block.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#                                                      ^ source.lcl meta.block.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#                                                       ^ source.lcl meta.block.lcl meta.block.lcl punctuation.section.block.end.lcl
+#                                                        ^ source.lcl meta.block.lcl
+#                                                         ^ source.lcl meta.block.lcl punctuation.section.block.end.lcl
+>puts [odd? 13]
+#^^^^ source.lcl support.function.builtin.lcl
+#    ^ source.lcl
+#     ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#      ^^^^ source.lcl meta.subcommand.lcl entity.name.function.call.lcl
+#          ^ source.lcl meta.subcommand.lcl
+#           ^^ source.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#             ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+>
+>;; ============================================================================
+#^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>;; Control flow
+#^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#  ^^^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>;; ============================================================================
+#^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>
+>if [< $x 20] { puts "small" } else { puts "big" }
+#^^ source.lcl keyword.control.conditional.lcl
+#  ^ source.lcl
+#   ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#    ^ source.lcl meta.subcommand.lcl keyword.operator.lcl
+#     ^ source.lcl meta.subcommand.lcl
+#      ^ source.lcl meta.subcommand.lcl variable.other.lcl punctuation.definition.variable.lcl
+#       ^ source.lcl meta.subcommand.lcl variable.other.lcl
+#        ^ source.lcl meta.subcommand.lcl
+#         ^^ source.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#           ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#            ^ source.lcl
+#             ^ source.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#              ^ source.lcl meta.block.lcl
+#               ^^^^ source.lcl meta.block.lcl support.function.builtin.lcl
+#                   ^ source.lcl meta.block.lcl
+#                    ^ source.lcl meta.block.lcl string.quoted.double.lcl punctuation.definition.string.begin.lcl
+#                     ^^^^^ source.lcl meta.block.lcl string.quoted.double.lcl
+#                          ^ source.lcl meta.block.lcl string.quoted.double.lcl punctuation.definition.string.end.lcl
+#                           ^ source.lcl meta.block.lcl
+#                            ^ source.lcl meta.block.lcl punctuation.section.block.end.lcl
+#                             ^ source.lcl
+#                              ^^^^ source.lcl keyword.control.conditional.lcl
+#                                  ^ source.lcl
+#                                   ^ source.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#                                    ^ source.lcl meta.block.lcl
+#                                     ^^^^ source.lcl meta.block.lcl support.function.builtin.lcl
+#                                         ^ source.lcl meta.block.lcl
+#                                          ^ source.lcl meta.block.lcl string.quoted.double.lcl punctuation.definition.string.begin.lcl
+#                                           ^^^ source.lcl meta.block.lcl string.quoted.double.lcl
+#                                              ^ source.lcl meta.block.lcl string.quoted.double.lcl punctuation.definition.string.end.lcl
+#                                               ^ source.lcl meta.block.lcl
+#                                                ^ source.lcl meta.block.lcl punctuation.section.block.end.lcl
+>
+>let sign [cond [< $x 0] "negative" [== $x 0] "zero" else "positive"]
+#^^^ source.lcl storage.type.lcl
+#   ^ source.lcl
+#    ^^^^ source.lcl variable.other.definition.lcl
+#        ^ source.lcl
+#         ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#          ^^^^ source.lcl meta.subcommand.lcl keyword.control.conditional.lcl
+#              ^ source.lcl meta.subcommand.lcl
+#               ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#                ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl keyword.operator.lcl
+#                 ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl
+#                  ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                   ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl variable.other.lcl
+#                    ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl
+#                     ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#                      ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#                       ^ source.lcl meta.subcommand.lcl
+#                        ^ source.lcl meta.subcommand.lcl string.quoted.double.lcl punctuation.definition.string.begin.lcl
+#                         ^^^^^^^^ source.lcl meta.subcommand.lcl string.quoted.double.lcl
+#                                 ^ source.lcl meta.subcommand.lcl string.quoted.double.lcl punctuation.definition.string.end.lcl
+#                                  ^ source.lcl meta.subcommand.lcl
+#                                   ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#                                    ^^ source.lcl meta.subcommand.lcl meta.subcommand.lcl keyword.operator.lcl
+#                                      ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl
+#                                       ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                                        ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl variable.other.lcl
+#                                         ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl
+#                                          ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#                                           ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#                                            ^ source.lcl meta.subcommand.lcl
+#                                             ^ source.lcl meta.subcommand.lcl string.quoted.double.lcl punctuation.definition.string.begin.lcl
+#                                              ^^^^ source.lcl meta.subcommand.lcl string.quoted.double.lcl
+#                                                  ^ source.lcl meta.subcommand.lcl string.quoted.double.lcl punctuation.definition.string.end.lcl
+#                                                   ^ source.lcl meta.subcommand.lcl
+#                                                    ^^^^ source.lcl meta.subcommand.lcl keyword.control.conditional.lcl
+#                                                        ^ source.lcl meta.subcommand.lcl
+#                                                         ^ source.lcl meta.subcommand.lcl string.quoted.double.lcl punctuation.definition.string.begin.lcl
+#                                                          ^^^^^^^^ source.lcl meta.subcommand.lcl string.quoted.double.lcl
+#                                                                  ^ source.lcl meta.subcommand.lcl string.quoted.double.lcl punctuation.definition.string.end.lcl
+#                                                                   ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+>puts $sign
+#^^^^ source.lcl support.function.builtin.lcl
+#    ^ source.lcl
+#     ^ source.lcl variable.other.lcl punctuation.definition.variable.lcl
+#      ^^^^ source.lcl variable.other.lcl
+>
+>let op "sub"
+#^^^ source.lcl storage.type.lcl
+#   ^ source.lcl
+#    ^^ source.lcl variable.other.definition.lcl
+#      ^ source.lcl
+#       ^ source.lcl string.quoted.double.lcl punctuation.definition.string.begin.lcl
+#        ^^^ source.lcl string.quoted.double.lcl
+#           ^ source.lcl string.quoted.double.lcl punctuation.definition.string.end.lcl
+>puts [case $op {add} [+ 5 3] {sub} [- 5 3] else "unknown op"]
+#^^^^ source.lcl support.function.builtin.lcl
+#    ^ source.lcl
+#     ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#      ^^^^ source.lcl meta.subcommand.lcl keyword.control.conditional.lcl
+#          ^ source.lcl meta.subcommand.lcl
+#           ^ source.lcl meta.subcommand.lcl variable.other.lcl punctuation.definition.variable.lcl
+#            ^^ source.lcl meta.subcommand.lcl variable.other.lcl
+#              ^ source.lcl meta.subcommand.lcl
+#               ^ source.lcl meta.subcommand.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#                ^^^ source.lcl meta.subcommand.lcl meta.block.lcl entity.name.function.call.lcl
+#                   ^ source.lcl meta.subcommand.lcl meta.block.lcl punctuation.section.block.end.lcl
+#                    ^ source.lcl meta.subcommand.lcl
+#                     ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#                      ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl keyword.operator.lcl
+#                       ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl
+#                        ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#                         ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl
+#                          ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#                           ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#                            ^ source.lcl meta.subcommand.lcl
+#                             ^ source.lcl meta.subcommand.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#                              ^^^ source.lcl meta.subcommand.lcl meta.block.lcl entity.name.function.call.lcl
+#                                 ^ source.lcl meta.subcommand.lcl meta.block.lcl punctuation.section.block.end.lcl
+#                                  ^ source.lcl meta.subcommand.lcl
+#                                   ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#                                    ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl keyword.operator.lcl
+#                                     ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl
+#                                      ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#                                       ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl
+#                                        ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#                                         ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#                                          ^ source.lcl meta.subcommand.lcl
+#                                           ^^^^ source.lcl meta.subcommand.lcl keyword.control.conditional.lcl
+#                                               ^ source.lcl meta.subcommand.lcl
+#                                                ^ source.lcl meta.subcommand.lcl string.quoted.double.lcl punctuation.definition.string.begin.lcl
+#                                                 ^^^^^^^^^^ source.lcl meta.subcommand.lcl string.quoted.double.lcl
+#                                                           ^ source.lcl meta.subcommand.lcl string.quoted.double.lcl punctuation.definition.string.end.lcl
+#                                                            ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+>
+>var i 3
+#^^^ source.lcl storage.type.lcl
+#   ^ source.lcl
+#    ^ source.lcl variable.other.definition.lcl
+#     ^ source.lcl
+#      ^ source.lcl constant.numeric.integer.lcl
+>while {$i} { set! i [- $i 1] }
+#^^^^^ source.lcl keyword.control.loop.lcl
+#     ^ source.lcl
+#      ^ source.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#       ^ source.lcl meta.block.lcl variable.other.lcl punctuation.definition.variable.lcl
+#        ^ source.lcl meta.block.lcl variable.other.lcl
+#         ^ source.lcl meta.block.lcl punctuation.section.block.end.lcl
+#          ^ source.lcl
+#           ^ source.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#            ^ source.lcl meta.block.lcl
+#             ^^^^ source.lcl meta.block.lcl storage.type.lcl
+#                 ^ source.lcl meta.block.lcl
+#                  ^ source.lcl meta.block.lcl variable.other.definition.lcl
+#                   ^ source.lcl meta.block.lcl
+#                    ^ source.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#                     ^ source.lcl meta.block.lcl meta.subcommand.lcl keyword.operator.lcl
+#                      ^ source.lcl meta.block.lcl meta.subcommand.lcl
+#                       ^ source.lcl meta.block.lcl meta.subcommand.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                        ^ source.lcl meta.block.lcl meta.subcommand.lcl variable.other.lcl
+#                         ^ source.lcl meta.block.lcl meta.subcommand.lcl
+#                          ^ source.lcl meta.block.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#                           ^ source.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#                            ^ source.lcl meta.block.lcl
+#                             ^ source.lcl meta.block.lcl punctuation.section.block.end.lcl
+>for {var j 0} {[< $j 3]} {set! j [+ $j 1]} { puts "j = $j" }
+#^^^ source.lcl keyword.control.loop.lcl
+#   ^ source.lcl
+#    ^ source.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#     ^^^ source.lcl meta.block.lcl storage.type.lcl
+#        ^ source.lcl meta.block.lcl
+#         ^ source.lcl meta.block.lcl variable.other.definition.lcl
+#          ^ source.lcl meta.block.lcl
+#           ^ source.lcl meta.block.lcl constant.numeric.integer.lcl
+#            ^ source.lcl meta.block.lcl punctuation.section.block.end.lcl
+#             ^ source.lcl
+#              ^ source.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#               ^ source.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#                ^ source.lcl meta.block.lcl meta.subcommand.lcl keyword.operator.lcl
+#                 ^ source.lcl meta.block.lcl meta.subcommand.lcl
+#                  ^ source.lcl meta.block.lcl meta.subcommand.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                   ^ source.lcl meta.block.lcl meta.subcommand.lcl variable.other.lcl
+#                    ^ source.lcl meta.block.lcl meta.subcommand.lcl
+#                     ^ source.lcl meta.block.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#                      ^ source.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#                       ^ source.lcl meta.block.lcl punctuation.section.block.end.lcl
+#                        ^ source.lcl
+#                         ^ source.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#                          ^^^^ source.lcl meta.block.lcl storage.type.lcl
+#                              ^ source.lcl meta.block.lcl
+#                               ^ source.lcl meta.block.lcl variable.other.definition.lcl
+#                                ^ source.lcl meta.block.lcl
+#                                 ^ source.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#                                  ^ source.lcl meta.block.lcl meta.subcommand.lcl keyword.operator.lcl
+#                                   ^ source.lcl meta.block.lcl meta.subcommand.lcl
+#                                    ^ source.lcl meta.block.lcl meta.subcommand.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                                     ^ source.lcl meta.block.lcl meta.subcommand.lcl variable.other.lcl
+#                                      ^ source.lcl meta.block.lcl meta.subcommand.lcl
+#                                       ^ source.lcl meta.block.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#                                        ^ source.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#                                         ^ source.lcl meta.block.lcl punctuation.section.block.end.lcl
+#                                          ^ source.lcl
+#                                           ^ source.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#                                            ^ source.lcl meta.block.lcl
+#                                             ^^^^ source.lcl meta.block.lcl support.function.builtin.lcl
+#                                                 ^ source.lcl meta.block.lcl
+#                                                  ^ source.lcl meta.block.lcl string.quoted.double.lcl punctuation.definition.string.begin.lcl
+#                                                   ^^^^ source.lcl meta.block.lcl string.quoted.double.lcl
+#                                                       ^ source.lcl meta.block.lcl string.quoted.double.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                                                        ^ source.lcl meta.block.lcl string.quoted.double.lcl variable.other.lcl
+#                                                         ^ source.lcl meta.block.lcl string.quoted.double.lcl punctuation.definition.string.end.lcl
+#                                                          ^ source.lcl meta.block.lcl
+#                                                           ^ source.lcl meta.block.lcl punctuation.section.block.end.lcl
+>foreach item (a b c) { puts $item }
+#^^^^^^^ source.lcl keyword.control.loop.lcl
+#       ^ source.lcl
+#        ^^^^ source.lcl variable.other.definition.lcl
+#            ^ source.lcl
+#             ^ source.lcl meta.list.lcl punctuation.section.parens.begin.lcl
+#              ^^^^^ source.lcl meta.list.lcl
+#                   ^ source.lcl meta.list.lcl punctuation.section.parens.end.lcl
+#                    ^ source.lcl
+#                     ^ source.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#                      ^ source.lcl meta.block.lcl
+#                       ^^^^ source.lcl meta.block.lcl support.function.builtin.lcl
+#                           ^ source.lcl meta.block.lcl
+#                            ^ source.lcl meta.block.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                             ^^^^ source.lcl meta.block.lcl variable.other.lcl
+#                                 ^ source.lcl meta.block.lcl
+#                                  ^ source.lcl meta.block.lcl punctuation.section.block.end.lcl
+>foreach kv #{k1 v1} { puts "[get $kv 0]=[get $kv 1]" }
+#^^^^^^^ source.lcl keyword.control.loop.lcl
+#       ^ source.lcl
+#        ^^ source.lcl variable.other.definition.lcl
+#          ^ source.lcl
+#           ^^ source.lcl meta.dict.lcl punctuation.section.dict.begin.lcl
+#             ^^^^^ source.lcl meta.dict.lcl
+#                  ^ source.lcl meta.dict.lcl punctuation.section.dict.end.lcl
+#                   ^ source.lcl
+#                    ^ source.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#                     ^ source.lcl meta.block.lcl
+#                      ^^^^ source.lcl meta.block.lcl support.function.builtin.lcl
+#                          ^ source.lcl meta.block.lcl
+#                           ^ source.lcl meta.block.lcl string.quoted.double.lcl punctuation.definition.string.begin.lcl
+#                            ^ source.lcl meta.block.lcl string.quoted.double.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#                             ^^^ source.lcl meta.block.lcl string.quoted.double.lcl meta.subcommand.lcl support.function.builtin.lcl
+#                                ^ source.lcl meta.block.lcl string.quoted.double.lcl meta.subcommand.lcl
+#                                 ^ source.lcl meta.block.lcl string.quoted.double.lcl meta.subcommand.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                                  ^^ source.lcl meta.block.lcl string.quoted.double.lcl meta.subcommand.lcl variable.other.lcl
+#                                    ^ source.lcl meta.block.lcl string.quoted.double.lcl meta.subcommand.lcl
+#                                     ^ source.lcl meta.block.lcl string.quoted.double.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#                                      ^ source.lcl meta.block.lcl string.quoted.double.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#                                       ^ source.lcl meta.block.lcl string.quoted.double.lcl
+#                                        ^ source.lcl meta.block.lcl string.quoted.double.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#                                         ^^^ source.lcl meta.block.lcl string.quoted.double.lcl meta.subcommand.lcl support.function.builtin.lcl
+#                                            ^ source.lcl meta.block.lcl string.quoted.double.lcl meta.subcommand.lcl
+#                                             ^ source.lcl meta.block.lcl string.quoted.double.lcl meta.subcommand.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                                              ^^ source.lcl meta.block.lcl string.quoted.double.lcl meta.subcommand.lcl variable.other.lcl
+#                                                ^ source.lcl meta.block.lcl string.quoted.double.lcl meta.subcommand.lcl
+#                                                 ^ source.lcl meta.block.lcl string.quoted.double.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#                                                  ^ source.lcl meta.block.lcl string.quoted.double.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#                                                   ^ source.lcl meta.block.lcl string.quoted.double.lcl punctuation.definition.string.end.lcl
+#                                                    ^ source.lcl meta.block.lcl
+#                                                     ^ source.lcl meta.block.lcl punctuation.section.block.end.lcl
+>repeat 2 { puts "again" }
+#^^^^^^ source.lcl keyword.control.loop.lcl
+#      ^ source.lcl
+#       ^ source.lcl constant.numeric.integer.lcl
+#        ^ source.lcl
+#         ^ source.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#          ^ source.lcl meta.block.lcl
+#           ^^^^ source.lcl meta.block.lcl support.function.builtin.lcl
+#               ^ source.lcl meta.block.lcl
+#                ^ source.lcl meta.block.lcl string.quoted.double.lcl punctuation.definition.string.begin.lcl
+#                 ^^^^^ source.lcl meta.block.lcl string.quoted.double.lcl
+#                      ^ source.lcl meta.block.lcl string.quoted.double.lcl punctuation.definition.string.end.lcl
+#                       ^ source.lcl meta.block.lcl
+#                        ^ source.lcl meta.block.lcl punctuation.section.block.end.lcl
+>foreach n (1 2 3 4 5) {
+#^^^^^^^ source.lcl keyword.control.loop.lcl
+#       ^ source.lcl
+#        ^ source.lcl variable.other.definition.lcl
+#         ^ source.lcl
+#          ^ source.lcl meta.list.lcl punctuation.section.parens.begin.lcl
+#           ^ source.lcl meta.list.lcl constant.numeric.integer.lcl
+#            ^ source.lcl meta.list.lcl
+#             ^ source.lcl meta.list.lcl constant.numeric.integer.lcl
+#              ^ source.lcl meta.list.lcl
+#               ^ source.lcl meta.list.lcl constant.numeric.integer.lcl
+#                ^ source.lcl meta.list.lcl
+#                 ^ source.lcl meta.list.lcl constant.numeric.integer.lcl
+#                  ^ source.lcl meta.list.lcl
+#                   ^ source.lcl meta.list.lcl constant.numeric.integer.lcl
+#                    ^ source.lcl meta.list.lcl punctuation.section.parens.end.lcl
+#                     ^ source.lcl
+#                      ^ source.lcl meta.block.lcl punctuation.section.block.begin.lcl
+>    if [== $n 2] { continue }
+#^^^^ source.lcl meta.block.lcl
+#    ^^ source.lcl meta.block.lcl keyword.control.conditional.lcl
+#      ^ source.lcl meta.block.lcl
+#       ^ source.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#        ^^ source.lcl meta.block.lcl meta.subcommand.lcl keyword.operator.lcl
+#          ^ source.lcl meta.block.lcl meta.subcommand.lcl
+#           ^ source.lcl meta.block.lcl meta.subcommand.lcl variable.other.lcl punctuation.definition.variable.lcl
+#            ^ source.lcl meta.block.lcl meta.subcommand.lcl variable.other.lcl
+#             ^ source.lcl meta.block.lcl meta.subcommand.lcl
+#              ^ source.lcl meta.block.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#               ^ source.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#                ^ source.lcl meta.block.lcl
+#                 ^ source.lcl meta.block.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#                  ^ source.lcl meta.block.lcl meta.block.lcl
+#                   ^^^^^^^^ source.lcl meta.block.lcl meta.block.lcl keyword.control.loop.lcl
+#                           ^ source.lcl meta.block.lcl meta.block.lcl
+#                            ^ source.lcl meta.block.lcl meta.block.lcl punctuation.section.block.end.lcl
+>    if [== $n 4] { break }
+#^^^^ source.lcl meta.block.lcl
+#    ^^ source.lcl meta.block.lcl keyword.control.conditional.lcl
+#      ^ source.lcl meta.block.lcl
+#       ^ source.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#        ^^ source.lcl meta.block.lcl meta.subcommand.lcl keyword.operator.lcl
+#          ^ source.lcl meta.block.lcl meta.subcommand.lcl
+#           ^ source.lcl meta.block.lcl meta.subcommand.lcl variable.other.lcl punctuation.definition.variable.lcl
+#            ^ source.lcl meta.block.lcl meta.subcommand.lcl variable.other.lcl
+#             ^ source.lcl meta.block.lcl meta.subcommand.lcl
+#              ^ source.lcl meta.block.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#               ^ source.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#                ^ source.lcl meta.block.lcl
+#                 ^ source.lcl meta.block.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#                  ^ source.lcl meta.block.lcl meta.block.lcl
+#                   ^^^^^ source.lcl meta.block.lcl meta.block.lcl keyword.control.loop.lcl
+#                        ^ source.lcl meta.block.lcl meta.block.lcl
+#                         ^ source.lcl meta.block.lcl meta.block.lcl punctuation.section.block.end.lcl
+>    puts $n
+#^^^^ source.lcl meta.block.lcl
+#    ^^^^ source.lcl meta.block.lcl support.function.builtin.lcl
+#        ^ source.lcl meta.block.lcl
+#         ^ source.lcl meta.block.lcl variable.other.lcl punctuation.definition.variable.lcl
+#          ^ source.lcl meta.block.lcl variable.other.lcl
+>}
+#^ source.lcl meta.block.lcl punctuation.section.block.end.lcl
+>
+>;; ============================================================================
+#^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>;; Data: lists, dicts, strings, brace literals
+#^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>;; ============================================================================
+#^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>
+>let lst (a b c)
+#^^^ source.lcl storage.type.lcl
+#   ^ source.lcl
+#    ^^^ source.lcl variable.other.definition.lcl
+#       ^ source.lcl
+#        ^ source.lcl meta.list.lcl punctuation.section.parens.begin.lcl
+#         ^^^^^ source.lcl meta.list.lcl
+#              ^ source.lcl meta.list.lcl punctuation.section.parens.end.lcl
+>let nested ((1 2)
+#^^^ source.lcl storage.type.lcl
+#   ^ source.lcl
+#    ^^^^^^ source.lcl variable.other.definition.lcl
+#          ^ source.lcl
+#           ^ source.lcl meta.list.lcl punctuation.section.parens.begin.lcl
+#            ^ source.lcl meta.list.lcl meta.list.lcl punctuation.section.parens.begin.lcl
+#             ^ source.lcl meta.list.lcl meta.list.lcl constant.numeric.integer.lcl
+#              ^ source.lcl meta.list.lcl meta.list.lcl
+#               ^ source.lcl meta.list.lcl meta.list.lcl constant.numeric.integer.lcl
+#                ^ source.lcl meta.list.lcl meta.list.lcl punctuation.section.parens.end.lcl
+>            (3 4))              ;; newlines are whitespace inside (...)
+#^^^^^^^^^^^^ source.lcl meta.list.lcl
+#            ^ source.lcl meta.list.lcl meta.list.lcl punctuation.section.parens.begin.lcl
+#             ^ source.lcl meta.list.lcl meta.list.lcl constant.numeric.integer.lcl
+#              ^ source.lcl meta.list.lcl meta.list.lcl
+#               ^ source.lcl meta.list.lcl meta.list.lcl constant.numeric.integer.lcl
+#                ^ source.lcl meta.list.lcl meta.list.lcl punctuation.section.parens.end.lcl
+#                 ^ source.lcl meta.list.lcl punctuation.section.parens.end.lcl
+#                  ^^^^^^^^^^^^^^ source.lcl
+#                                ^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>let d #{name "Alice" age 30
+#^^^ source.lcl storage.type.lcl
+#   ^ source.lcl
+#    ^ source.lcl variable.other.definition.lcl
+#     ^ source.lcl
+#      ^^ source.lcl meta.dict.lcl punctuation.section.dict.begin.lcl
+#        ^^^^^ source.lcl meta.dict.lcl
+#             ^ source.lcl meta.dict.lcl string.quoted.double.lcl punctuation.definition.string.begin.lcl
+#              ^^^^^ source.lcl meta.dict.lcl string.quoted.double.lcl
+#                   ^ source.lcl meta.dict.lcl string.quoted.double.lcl punctuation.definition.string.end.lcl
+#                    ^^^^^ source.lcl meta.dict.lcl
+#                         ^^ source.lcl meta.dict.lcl constant.numeric.integer.lcl
+>        tags (x y)}
+#^^^^^^^^^^^^^ source.lcl meta.dict.lcl
+#             ^ source.lcl meta.dict.lcl meta.list.lcl punctuation.section.parens.begin.lcl
+#              ^^^ source.lcl meta.dict.lcl meta.list.lcl
+#                 ^ source.lcl meta.dict.lcl meta.list.lcl punctuation.section.parens.end.lcl
+#                  ^ source.lcl meta.dict.lcl punctuation.section.dict.end.lcl
+>puts [get $d name]
+#^^^^ source.lcl support.function.builtin.lcl
+#    ^ source.lcl
+#     ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#      ^^^ source.lcl meta.subcommand.lcl support.function.builtin.lcl
+#         ^ source.lcl meta.subcommand.lcl
+#          ^ source.lcl meta.subcommand.lcl variable.other.lcl punctuation.definition.variable.lcl
+#           ^ source.lcl meta.subcommand.lcl variable.other.lcl
+#            ^^^^^ source.lcl meta.subcommand.lcl
+#                 ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+>puts [-> $d {get age} {+ 1}]    ;; threading
+#^^^^ source.lcl support.function.builtin.lcl
+#    ^ source.lcl
+#     ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#      ^^ source.lcl meta.subcommand.lcl keyword.operator.lcl
+#        ^ source.lcl meta.subcommand.lcl
+#         ^ source.lcl meta.subcommand.lcl variable.other.lcl punctuation.definition.variable.lcl
+#          ^ source.lcl meta.subcommand.lcl variable.other.lcl
+#           ^ source.lcl meta.subcommand.lcl
+#            ^ source.lcl meta.subcommand.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#             ^^^ source.lcl meta.subcommand.lcl meta.block.lcl support.function.builtin.lcl
+#                ^^^^ source.lcl meta.subcommand.lcl meta.block.lcl
+#                    ^ source.lcl meta.subcommand.lcl meta.block.lcl punctuation.section.block.end.lcl
+#                     ^ source.lcl meta.subcommand.lcl
+#                      ^ source.lcl meta.subcommand.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#                       ^ source.lcl meta.subcommand.lcl meta.block.lcl keyword.operator.lcl
+#                        ^ source.lcl meta.subcommand.lcl meta.block.lcl
+#                         ^ source.lcl meta.subcommand.lcl meta.block.lcl constant.numeric.integer.lcl
+#                          ^ source.lcl meta.subcommand.lcl meta.block.lcl punctuation.section.block.end.lcl
+#                           ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#                            ^^^^ source.lcl
+#                                ^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#                                  ^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>puts [->> 3 {- 10}]
+#^^^^ source.lcl support.function.builtin.lcl
+#    ^ source.lcl
+#     ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#      ^^^ source.lcl meta.subcommand.lcl keyword.operator.lcl
+#         ^ source.lcl meta.subcommand.lcl
+#          ^ source.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#           ^ source.lcl meta.subcommand.lcl
+#            ^ source.lcl meta.subcommand.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#             ^ source.lcl meta.subcommand.lcl meta.block.lcl keyword.operator.lcl
+#              ^ source.lcl meta.subcommand.lcl meta.block.lcl
+#               ^^ source.lcl meta.subcommand.lcl meta.block.lcl constant.numeric.integer.lcl
+#                 ^ source.lcl meta.subcommand.lcl meta.block.lcl punctuation.section.block.end.lcl
+#                  ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+>puts [List::map (1 2 3) [lambda {x} { * $x 2 }]]
+#^^^^ source.lcl support.function.builtin.lcl
+#    ^ source.lcl
+#     ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#      ^^^^^^^^^ source.lcl meta.subcommand.lcl entity.name.function.qualified.lcl
+#               ^ source.lcl meta.subcommand.lcl
+#                ^ source.lcl meta.subcommand.lcl meta.list.lcl punctuation.section.parens.begin.lcl
+#                 ^ source.lcl meta.subcommand.lcl meta.list.lcl constant.numeric.integer.lcl
+#                  ^ source.lcl meta.subcommand.lcl meta.list.lcl
+#                   ^ source.lcl meta.subcommand.lcl meta.list.lcl constant.numeric.integer.lcl
+#                    ^ source.lcl meta.subcommand.lcl meta.list.lcl
+#                     ^ source.lcl meta.subcommand.lcl meta.list.lcl constant.numeric.integer.lcl
+#                      ^ source.lcl meta.subcommand.lcl meta.list.lcl punctuation.section.parens.end.lcl
+#                       ^ source.lcl meta.subcommand.lcl
+#                        ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#                         ^^^^^^ source.lcl meta.subcommand.lcl meta.subcommand.lcl meta.function.lambda.lcl storage.type.function.lcl
+#                               ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl meta.function.lambda.lcl
+#                                ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl meta.function.lambda.lcl punctuation.section.parameters.begin.lcl
+#                                 ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl meta.function.lambda.lcl meta.function.parameters.lcl variable.parameter.lcl
+#                                  ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl meta.function.lambda.lcl punctuation.section.parameters.end.lcl
+#                                   ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl
+#                                    ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#                                     ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl meta.block.lcl
+#                                      ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl meta.block.lcl keyword.operator.lcl
+#                                       ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl meta.block.lcl
+#                                        ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl meta.block.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                                         ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl meta.block.lcl variable.other.lcl
+#                                          ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl meta.block.lcl
+#                                           ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl meta.block.lcl constant.numeric.integer.lcl
+#                                            ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl meta.block.lcl
+#                                             ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl meta.block.lcl punctuation.section.block.end.lcl
+#                                              ^ source.lcl meta.subcommand.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#                                               ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+>puts [String::join (a b c) "-"]
+#^^^^ source.lcl support.function.builtin.lcl
+#    ^ source.lcl
+#     ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#      ^^^^^^^^^^^^ source.lcl meta.subcommand.lcl entity.name.function.qualified.lcl
+#                  ^ source.lcl meta.subcommand.lcl
+#                   ^ source.lcl meta.subcommand.lcl meta.list.lcl punctuation.section.parens.begin.lcl
+#                    ^^^^^ source.lcl meta.subcommand.lcl meta.list.lcl
+#                         ^ source.lcl meta.subcommand.lcl meta.list.lcl punctuation.section.parens.end.lcl
+#                          ^ source.lcl meta.subcommand.lcl
+#                           ^ source.lcl meta.subcommand.lcl string.quoted.double.lcl punctuation.definition.string.begin.lcl
+#                            ^ source.lcl meta.subcommand.lcl string.quoted.double.lcl
+#                             ^ source.lcl meta.subcommand.lcl string.quoted.double.lcl punctuation.definition.string.end.lcl
+#                              ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+>puts "escapes: tab\t newline\\n quote\" bracket\[ hex\x41 octal\101"
+#^^^^ source.lcl support.function.builtin.lcl
+#    ^ source.lcl
+#     ^ source.lcl string.quoted.double.lcl punctuation.definition.string.begin.lcl
+#      ^^^^^^^^^^^^ source.lcl string.quoted.double.lcl
+#                  ^^ source.lcl string.quoted.double.lcl constant.character.escape.lcl
+#                    ^^^^^^^^ source.lcl string.quoted.double.lcl
+#                            ^^ source.lcl string.quoted.double.lcl constant.character.escape.lcl
+#                              ^^^^^^^ source.lcl string.quoted.double.lcl
+#                                     ^^ source.lcl string.quoted.double.lcl constant.character.escape.lcl
+#                                       ^^^^^^^^ source.lcl string.quoted.double.lcl
+#                                               ^^ source.lcl string.quoted.double.lcl constant.character.escape.lcl
+#                                                 ^^^^ source.lcl string.quoted.double.lcl
+#                                                     ^^^^ source.lcl string.quoted.double.lcl constant.character.escape.lcl
+#                                                         ^^^^^^ source.lcl string.quoted.double.lcl
+#                                                               ^^^^ source.lcl string.quoted.double.lcl constant.character.escape.lcl
+#                                                                   ^ source.lcl string.quoted.double.lcl punctuation.definition.string.end.lcl
+>puts "multi
+#^^^^ source.lcl support.function.builtin.lcl
+#    ^ source.lcl
+#     ^ source.lcl string.quoted.double.lcl punctuation.definition.string.begin.lcl
+#      ^^^^^^ source.lcl string.quoted.double.lcl
+>line"
+#^^^^ source.lcl string.quoted.double.lcl
+#    ^ source.lcl string.quoted.double.lcl punctuation.definition.string.end.lcl
+>puts [+ 1 2 3 \
+#^^^^ source.lcl support.function.builtin.lcl
+#    ^ source.lcl
+#     ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#      ^ source.lcl meta.subcommand.lcl keyword.operator.lcl
+#       ^ source.lcl meta.subcommand.lcl
+#        ^ source.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#         ^ source.lcl meta.subcommand.lcl
+#          ^ source.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#           ^ source.lcl meta.subcommand.lcl
+#            ^ source.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#             ^ source.lcl meta.subcommand.lcl
+#              ^ source.lcl meta.subcommand.lcl punctuation.separator.continuation.lcl
+>        4]                      ;; line continuation
+#^^^^^^^^ source.lcl meta.subcommand.lcl
+#        ^ source.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#         ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#          ^^^^^^^^^^^^^^^^^^^^^^ source.lcl
+#                                ^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#                                  ^^^^^^^^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>
+>;; Braces are text.  Balanced contents parse as code for highlighting;
+#^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>;; contents that cannot be code stay opaque literals.
+#^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>let regex {^[a-z]+:[0-9]+$}
+#^^^ source.lcl storage.type.lcl
+#   ^ source.lcl
+#    ^^^^^ source.lcl variable.other.definition.lcl
+#         ^ source.lcl
+#          ^ source.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#           ^ source.lcl meta.block.lcl entity.name.function.call.lcl
+#            ^ source.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#             ^^^ source.lcl meta.block.lcl meta.subcommand.lcl entity.name.function.call.lcl
+#                ^ source.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#                 ^^ source.lcl meta.block.lcl
+#                   ^ source.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#                    ^^^ source.lcl meta.block.lcl meta.subcommand.lcl entity.name.function.call.lcl
+#                       ^ source.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#                        ^^ source.lcl meta.block.lcl
+#                          ^ source.lcl meta.block.lcl punctuation.section.block.end.lcl
+>let shell {awk '{print $1}' data.txt}
+#^^^ source.lcl storage.type.lcl
+#   ^ source.lcl
+#    ^^^^^ source.lcl variable.other.definition.lcl
+#         ^ source.lcl
+#          ^ source.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#           ^^^ source.lcl meta.block.lcl entity.name.function.call.lcl
+#              ^^ source.lcl meta.block.lcl
+#                ^ source.lcl meta.block.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#                 ^^^^^ source.lcl meta.block.lcl meta.block.lcl entity.name.function.call.lcl
+#                      ^^^ source.lcl meta.block.lcl meta.block.lcl
+#                         ^ source.lcl meta.block.lcl meta.block.lcl punctuation.section.block.end.lcl
+#                          ^^^^^^^^^^ source.lcl meta.block.lcl
+#                                    ^ source.lcl meta.block.lcl punctuation.section.block.end.lcl
+>let msg {unmatched '['}
+#^^^ source.lcl storage.type.lcl
+#   ^ source.lcl
+#    ^^^ source.lcl variable.other.definition.lcl
+#       ^ source.lcl
+#        ^ source.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#         ^^^^^^^^^ source.lcl meta.block.lcl entity.name.function.call.lcl
+#                  ^^ source.lcl meta.block.lcl
+#                    ^ source.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#                     ^ source.lcl meta.block.lcl meta.subcommand.lcl entity.name.function.call.lcl
+#                      ^ source.lcl meta.block.lcl punctuation.section.block.end.lcl
+>let quoted {say "hi}
+#^^^ source.lcl storage.type.lcl
+#   ^ source.lcl
+#    ^^^^^^ source.lcl variable.other.definition.lcl
+#          ^ source.lcl
+#           ^ source.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#            ^^^ source.lcl meta.block.lcl entity.name.function.call.lcl
+#               ^ source.lcl meta.block.lcl
+#                ^ source.lcl meta.block.lcl string.quoted.double.lcl punctuation.definition.string.begin.lcl
+#                 ^^ source.lcl meta.block.lcl string.quoted.double.lcl
+#                   ^ source.lcl meta.block.lcl punctuation.section.block.end.lcl
+>puts [len {a b c}]              ;; 5: a five-character string, not a list
+#^^^^ source.lcl support.function.builtin.lcl
+#    ^ source.lcl
+#     ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#      ^^^ source.lcl meta.subcommand.lcl support.function.builtin.lcl
+#         ^ source.lcl meta.subcommand.lcl
+#          ^ source.lcl meta.subcommand.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#           ^ source.lcl meta.subcommand.lcl meta.block.lcl entity.name.function.call.lcl
+#            ^^^^ source.lcl meta.subcommand.lcl meta.block.lcl
+#                ^ source.lcl meta.subcommand.lcl meta.block.lcl punctuation.section.block.end.lcl
+#                 ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#                  ^^^^^^^^^^^^^^ source.lcl
+#                                ^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>
+>;; ============================================================================
+#^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>;; Metaprogramming
+#^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#  ^^^^^^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>;; ============================================================================
+#^^ source.lcl comment.line.double-semicolon.lcl punctuation.definition.comment.lcl
+#  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ source.lcl comment.line.double-semicolon.lcl
+>
+>let qx 10
+#^^^ source.lcl storage.type.lcl
+#   ^ source.lcl
+#    ^^ source.lcl variable.other.definition.lcl
+#      ^ source.lcl
+#       ^^ source.lcl constant.numeric.integer.lcl
+>puts [quasiquote { + ,$qx ,[+ 1 2] ,@$args \, }]
+#^^^^ source.lcl support.function.builtin.lcl
+#    ^ source.lcl
+#     ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#      ^^^^^^^^^^ source.lcl meta.subcommand.lcl keyword.other.eval.lcl
+#                ^ source.lcl meta.subcommand.lcl
+#                 ^ source.lcl meta.subcommand.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#                  ^ source.lcl meta.subcommand.lcl meta.block.lcl
+#                   ^ source.lcl meta.subcommand.lcl meta.block.lcl keyword.operator.lcl
+#                    ^ source.lcl meta.subcommand.lcl meta.block.lcl
+#                     ^ source.lcl meta.subcommand.lcl meta.block.lcl keyword.operator.unquote.lcl
+#                      ^ source.lcl meta.subcommand.lcl meta.block.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                       ^^ source.lcl meta.subcommand.lcl meta.block.lcl variable.other.lcl
+#                         ^^ source.lcl meta.subcommand.lcl meta.block.lcl
+#                           ^ source.lcl meta.subcommand.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#                            ^ source.lcl meta.subcommand.lcl meta.block.lcl meta.subcommand.lcl keyword.operator.lcl
+#                             ^ source.lcl meta.subcommand.lcl meta.block.lcl meta.subcommand.lcl
+#                              ^ source.lcl meta.subcommand.lcl meta.block.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#                               ^ source.lcl meta.subcommand.lcl meta.block.lcl meta.subcommand.lcl
+#                                ^ source.lcl meta.subcommand.lcl meta.block.lcl meta.subcommand.lcl constant.numeric.integer.lcl
+#                                 ^ source.lcl meta.subcommand.lcl meta.block.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+#                                  ^ source.lcl meta.subcommand.lcl meta.block.lcl
+#                                   ^ source.lcl meta.subcommand.lcl meta.block.lcl keyword.operator.unquote.lcl
+#                                    ^ source.lcl meta.subcommand.lcl meta.block.lcl keyword.operator.spread.lcl
+#                                     ^ source.lcl meta.subcommand.lcl meta.block.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                                      ^^^^ source.lcl meta.subcommand.lcl meta.block.lcl variable.other.lcl
+#                                          ^ source.lcl meta.subcommand.lcl meta.block.lcl
+#                                           ^^ source.lcl meta.subcommand.lcl meta.block.lcl constant.character.escape.lcl
+#                                             ^ source.lcl meta.subcommand.lcl meta.block.lcl
+#                                              ^ source.lcl meta.subcommand.lcl meta.block.lcl punctuation.section.block.end.lcl
+#                                               ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+>
+>macro defn {name params body} {
+#^^^^^ source.lcl meta.function.lcl storage.type.function.lcl
+#     ^ source.lcl meta.function.lcl
+#      ^^^^ source.lcl meta.function.lcl entity.name.function.lcl
+#          ^ source.lcl meta.function.lcl
+#           ^ source.lcl meta.function.lcl punctuation.section.parameters.begin.lcl
+#            ^^^^ source.lcl meta.function.lcl meta.function.parameters.lcl variable.parameter.lcl
+#                ^ source.lcl meta.function.lcl meta.function.parameters.lcl
+#                 ^^^^^^ source.lcl meta.function.lcl meta.function.parameters.lcl variable.parameter.lcl
+#                       ^ source.lcl meta.function.lcl meta.function.parameters.lcl
+#                        ^^^^ source.lcl meta.function.lcl meta.function.parameters.lcl variable.parameter.lcl
+#                            ^ source.lcl meta.function.lcl punctuation.section.parameters.end.lcl
+#                             ^ source.lcl
+#                              ^ source.lcl meta.block.lcl punctuation.section.block.begin.lcl
+>    quasiquote {
+#^^^^ source.lcl meta.block.lcl
+#    ^^^^^^^^^^ source.lcl meta.block.lcl keyword.other.eval.lcl
+#              ^ source.lcl meta.block.lcl
+#               ^ source.lcl meta.block.lcl meta.block.lcl punctuation.section.block.begin.lcl
+>        proc ,$name {,@$params} {,$body}
+#^^^^^^^^ source.lcl meta.block.lcl meta.block.lcl
+#        ^^^^ source.lcl meta.block.lcl meta.block.lcl storage.type.function.lcl
+#            ^ source.lcl meta.block.lcl meta.block.lcl
+#             ^ source.lcl meta.block.lcl meta.block.lcl keyword.operator.unquote.lcl
+#              ^ source.lcl meta.block.lcl meta.block.lcl variable.other.lcl punctuation.definition.variable.lcl
+#               ^^^^ source.lcl meta.block.lcl meta.block.lcl variable.other.lcl
+#                   ^ source.lcl meta.block.lcl meta.block.lcl
+#                    ^ source.lcl meta.block.lcl meta.block.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#                     ^ source.lcl meta.block.lcl meta.block.lcl meta.block.lcl keyword.operator.unquote.lcl
+#                      ^ source.lcl meta.block.lcl meta.block.lcl meta.block.lcl keyword.operator.spread.lcl
+#                       ^ source.lcl meta.block.lcl meta.block.lcl meta.block.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                        ^^^^^^ source.lcl meta.block.lcl meta.block.lcl meta.block.lcl variable.other.lcl
+#                              ^ source.lcl meta.block.lcl meta.block.lcl meta.block.lcl punctuation.section.block.end.lcl
+#                               ^ source.lcl meta.block.lcl meta.block.lcl
+#                                ^ source.lcl meta.block.lcl meta.block.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#                                 ^ source.lcl meta.block.lcl meta.block.lcl meta.block.lcl keyword.operator.unquote.lcl
+#                                  ^ source.lcl meta.block.lcl meta.block.lcl meta.block.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                                   ^^^^ source.lcl meta.block.lcl meta.block.lcl meta.block.lcl variable.other.lcl
+#                                       ^ source.lcl meta.block.lcl meta.block.lcl meta.block.lcl punctuation.section.block.end.lcl
+>    }
+#^^^^ source.lcl meta.block.lcl meta.block.lcl
+#    ^ source.lcl meta.block.lcl meta.block.lcl punctuation.section.block.end.lcl
+>}
+#^ source.lcl meta.block.lcl punctuation.section.block.end.lcl
+>defn greet (who) { "Hello, $who!" }
+#^^^^ source.lcl entity.name.function.call.lcl
+#    ^^^^^^^ source.lcl
+#           ^ source.lcl meta.list.lcl punctuation.section.parens.begin.lcl
+#            ^^^ source.lcl meta.list.lcl
+#               ^ source.lcl meta.list.lcl punctuation.section.parens.end.lcl
+#                ^ source.lcl
+#                 ^ source.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#                  ^ source.lcl meta.block.lcl
+#                   ^ source.lcl meta.block.lcl string.quoted.double.lcl punctuation.definition.string.begin.lcl
+#                    ^^^^^^^ source.lcl meta.block.lcl string.quoted.double.lcl
+#                           ^ source.lcl meta.block.lcl string.quoted.double.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                            ^^^ source.lcl meta.block.lcl string.quoted.double.lcl variable.other.lcl
+#                               ^ source.lcl meta.block.lcl string.quoted.double.lcl
+#                                ^ source.lcl meta.block.lcl string.quoted.double.lcl punctuation.definition.string.end.lcl
+#                                 ^ source.lcl meta.block.lcl
+#                                  ^ source.lcl meta.block.lcl punctuation.section.block.end.lcl
+>puts [greet "World"]
+#^^^^ source.lcl support.function.builtin.lcl
+#    ^ source.lcl
+#     ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#      ^^^^^ source.lcl meta.subcommand.lcl entity.name.function.call.lcl
+#           ^ source.lcl meta.subcommand.lcl
+#            ^ source.lcl meta.subcommand.lcl string.quoted.double.lcl punctuation.definition.string.begin.lcl
+#             ^^^^^ source.lcl meta.subcommand.lcl string.quoted.double.lcl
+#                  ^ source.lcl meta.subcommand.lcl string.quoted.double.lcl punctuation.definition.string.end.lcl
+#                   ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+>
+>let rc [catch { error "boom" } res err]
+#^^^ source.lcl storage.type.lcl
+#   ^ source.lcl
+#    ^^ source.lcl variable.other.definition.lcl
+#      ^ source.lcl
+#       ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.begin.lcl
+#        ^^^^^ source.lcl meta.subcommand.lcl keyword.control.lcl
+#             ^ source.lcl meta.subcommand.lcl
+#              ^ source.lcl meta.subcommand.lcl meta.block.lcl punctuation.section.block.begin.lcl
+#               ^ source.lcl meta.subcommand.lcl meta.block.lcl
+#                ^^^^^ source.lcl meta.subcommand.lcl meta.block.lcl support.function.builtin.lcl
+#                     ^ source.lcl meta.subcommand.lcl meta.block.lcl
+#                      ^ source.lcl meta.subcommand.lcl meta.block.lcl string.quoted.double.lcl punctuation.definition.string.begin.lcl
+#                       ^^^^ source.lcl meta.subcommand.lcl meta.block.lcl string.quoted.double.lcl
+#                           ^ source.lcl meta.subcommand.lcl meta.block.lcl string.quoted.double.lcl punctuation.definition.string.end.lcl
+#                            ^ source.lcl meta.subcommand.lcl meta.block.lcl
+#                             ^ source.lcl meta.subcommand.lcl meta.block.lcl punctuation.section.block.end.lcl
+#                              ^^^^^^^^ source.lcl meta.subcommand.lcl
+#                                      ^ source.lcl meta.subcommand.lcl punctuation.section.brackets.end.lcl
+>puts "caught: $rc $err"
+#^^^^ source.lcl support.function.builtin.lcl
+#    ^ source.lcl
+#     ^ source.lcl string.quoted.double.lcl punctuation.definition.string.begin.lcl
+#      ^^^^^^^^ source.lcl string.quoted.double.lcl
+#              ^ source.lcl string.quoted.double.lcl variable.other.lcl punctuation.definition.variable.lcl
+#               ^^ source.lcl string.quoted.double.lcl variable.other.lcl
+#                 ^ source.lcl string.quoted.double.lcl
+#                  ^ source.lcl string.quoted.double.lcl variable.other.lcl punctuation.definition.variable.lcl
+#                   ^^^ source.lcl string.quoted.double.lcl variable.other.lcl
+#                      ^ source.lcl string.quoted.double.lcl punctuation.definition.string.end.lcl
+>

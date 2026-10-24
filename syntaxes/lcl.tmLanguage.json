@@ -1,0 +1,605 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Lcl",
+  "scopeName": "source.lcl",
+  "fileTypes": [
+    "lcl"
+  ],
+  "patterns": [
+    {
+      "include": "#statements-top"
+    }
+  ],
+  "repository": {
+    "statements-top": {
+      "comment": "Top level: comments run to end of line regardless of delimiters.",
+      "patterns": [
+        {
+          "include": "#comment-top"
+        },
+        {
+          "include": "#statement"
+        }
+      ]
+    },
+    "statements": {
+      "comment": "Inside a brace or bracket word: Lcl finds the word extent before it looks for comments, so an unbalanced } in a comment closes the block.",
+      "patterns": [
+        {
+          "include": "#comment-nested"
+        },
+        {
+          "include": "#statement"
+        }
+      ]
+    },
+    "statement": {
+      "patterns": [
+        {
+          "include": "#definitions"
+        },
+        {
+          "include": "#command-head"
+        },
+        {
+          "include": "#words"
+        }
+      ]
+    },
+    "words": {
+      "patterns": [
+        {
+          "include": "#continuation"
+        },
+        {
+          "include": "#escape"
+        },
+        {
+          "include": "#string"
+        },
+        {
+          "include": "#dict"
+        },
+        {
+          "include": "#block"
+        },
+        {
+          "include": "#subcommand"
+        },
+        {
+          "include": "#list"
+        },
+        {
+          "include": "#variable"
+        },
+        {
+          "include": "#number"
+        },
+        {
+          "include": "#prefix"
+        },
+        {
+          "include": "#keywords"
+        },
+        {
+          "include": "#builtins"
+        },
+        {
+          "include": "#operators"
+        },
+        {
+          "include": "#qualified-name"
+        }
+      ]
+    },
+    "list-words": {
+      "comment": "Contents of (...) and #{...}: words, never commands; newlines are whitespace.",
+      "patterns": [
+        {
+          "include": "#comment-nested"
+        },
+        {
+          "include": "#words"
+        }
+      ]
+    },
+    "comment-top": {
+      "patterns": [
+        {
+          "name": "comment.line.documentation.lcl",
+          "match": "(;;;).*$",
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.comment.lcl"
+            }
+          }
+        },
+        {
+          "name": "comment.line.double-semicolon.lcl",
+          "match": "(;;).*$",
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.comment.lcl"
+            }
+          }
+        }
+      ]
+    },
+    "comment-nested": {
+      "patterns": [
+        {
+          "name": "comment.line.documentation.lcl",
+          "begin": ";;;",
+          "end": "$|(?=\\})",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.lcl"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#comment-braces"
+            }
+          ]
+        },
+        {
+          "name": "comment.line.double-semicolon.lcl",
+          "begin": ";;",
+          "end": "$|(?=\\})",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.lcl"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#comment-braces"
+            }
+          ]
+        }
+      ]
+    },
+    "comment-braces": {
+      "comment": "Balanced braces inside a nested comment do not close the enclosing block.",
+      "begin": "\\{",
+      "end": "\\}",
+      "patterns": [
+        {
+          "include": "#comment-braces"
+        }
+      ]
+    },
+    "string": {
+      "comment": "A \"...\" template. It also ends before an unbalanced }, which is what Lcl's brace-depth rule does to a quote inside a brace word.",
+      "name": "string.quoted.double.lcl",
+      "begin": "\"",
+      "end": "\"|(?=\\})",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.lcl"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.lcl"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#string-body"
+        }
+      ]
+    },
+    "string-body": {
+      "patterns": [
+        {
+          "include": "#continuation"
+        },
+        {
+          "include": "#escape"
+        },
+        {
+          "include": "#variable"
+        },
+        {
+          "include": "#subcommand"
+        },
+        {
+          "include": "#string-braces"
+        }
+      ]
+    },
+    "string-braces": {
+      "comment": "Balanced braces inside a string are plain text that keeps the brace depth even.",
+      "begin": "\\{",
+      "end": "\\}|(?=\")",
+      "patterns": [
+        {
+          "include": "#string-body"
+        }
+      ]
+    },
+    "escape": {
+      "name": "constant.character.escape.lcl",
+      "match": "\\\\(?:x[0-9A-Fa-f]{1,2}|[0-7]{1,3}|.)"
+    },
+    "continuation": {
+      "name": "punctuation.separator.continuation.lcl",
+      "match": "\\\\$"
+    },
+    "block": {
+      "name": "meta.block.lcl",
+      "begin": "\\{",
+      "end": "\\}",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.block.begin.lcl"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.block.end.lcl"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#statements"
+        }
+      ]
+    },
+    "subcommand": {
+      "comment": "Also ends before an unbalanced }: a brace word's extent is decided by brace depth alone.",
+      "name": "meta.subcommand.lcl",
+      "begin": "\\[",
+      "end": "\\]|(?=\\})",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.brackets.begin.lcl"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.brackets.end.lcl"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#statements"
+        }
+      ]
+    },
+    "list": {
+      "name": "meta.list.lcl",
+      "begin": "\\(",
+      "end": "\\)|(?=\\})",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.parens.begin.lcl"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.parens.end.lcl"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#list-words"
+        }
+      ]
+    },
+    "dict": {
+      "name": "meta.dict.lcl",
+      "begin": "(?<![^\\s;\\[\\]{}()\"])#\\{",
+      "end": "\\}",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.dict.begin.lcl"
+        }
+      },
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.dict.end.lcl"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#list-words"
+        }
+      ]
+    },
+    "variable": {
+      "patterns": [
+        {
+          "name": "variable.other.lcl",
+          "match": "(\\$)([A-Za-z_][A-Za-z0-9_]*)",
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.variable.lcl"
+            }
+          }
+        },
+        {
+          "name": "variable.other.qualified.lcl",
+          "match": "(\\$\\{)((?:::)?[A-Za-z_][A-Za-z0-9_?!-]*(?:::[A-Za-z_][A-Za-z0-9_?!-]*)*)(\\})",
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.variable.begin.lcl"
+            },
+            "3": {
+              "name": "punctuation.definition.variable.end.lcl"
+            }
+          }
+        },
+        {
+          "name": "invalid.illegal.variable.lcl",
+          "match": "\\$\\{[^}\\s]*\\}"
+        }
+      ]
+    },
+    "number": {
+      "patterns": [
+        {
+          "name": "constant.numeric.float.lcl",
+          "match": "(?<![^\\s;\\[\\]{}()\"])-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+(?:[eE][+-]?[0-9]+)?|[eE][+-]?[0-9]+)(?![^\\s;\\[\\]{}()\"])"
+        },
+        {
+          "name": "constant.numeric.integer.lcl",
+          "match": "(?<![^\\s;\\[\\]{}()\"])(?:0|-?[1-9][0-9]*)(?![^\\s;\\[\\]{}()\"])"
+        }
+      ]
+    },
+    "prefix": {
+      "patterns": [
+        {
+          "name": "keyword.operator.spread.lcl",
+          "match": "(?<![^\\s;\\[\\]{}()\",])@"
+        },
+        {
+          "name": "keyword.operator.unquote.lcl",
+          "match": "(?<![^\\s;\\[\\]{}()\"]),,?(?![\\s;\\[\\]{}()\"]|$)"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.conditional.lcl",
+          "match": "(?<![^\\s;\\[\\]{}()\"])(?:else|cond|case|if)(?![^\\s;\\[\\]{}()\"])"
+        },
+        {
+          "name": "keyword.control.loop.lcl",
+          "match": "(?<![^\\s;\\[\\]{}()\"])(?:continue|foreach|repeat|while|break|for)(?![^\\s;\\[\\]{}()\"])"
+        },
+        {
+          "name": "keyword.control.return.lcl",
+          "match": "(?<![^\\s;\\[\\]{}()\"])(?:return)(?![^\\s;\\[\\]{}()\"])"
+        },
+        {
+          "name": "keyword.control.import.lcl",
+          "match": "(?<![^\\s;\\[\\]{}()\"])(?:require|import|load)(?![^\\s;\\[\\]{}()\"])"
+        },
+        {
+          "name": "storage.type.function.lcl",
+          "match": "(?<![^\\s;\\[\\]{}()\"])(?:lambda|macro|proc)(?![^\\s;\\[\\]{}()\"])"
+        },
+        {
+          "name": "storage.type.lcl",
+          "match": "(?<![^\\s;\\[\\]{}()\"])(?:set!|let|var)(?![^\\s;\\[\\]{}()\"])"
+        },
+        {
+          "name": "storage.type.namespace.lcl",
+          "match": "(?<![^\\s;\\[\\]{}()\"])(?:namespace)(?![^\\s;\\[\\]{}()\"])"
+        },
+        {
+          "name": "keyword.control.lcl",
+          "match": "(?<![^\\s;\\[\\]{}()\"])(?:isolate|catch)(?![^\\s;\\[\\]{}()\"])"
+        },
+        {
+          "name": "keyword.other.eval.lcl",
+          "match": "(?<![^\\s;\\[\\]{}()\"])(?:macroexpand|quasiquote|eval_at|subst|eval)(?![^\\s;\\[\\]{}()\"])"
+        },
+        {
+          "name": "keyword.operator.logical.lcl",
+          "match": "(?<![^\\s;\\[\\]{}()\"])(?:and|not|or)(?![^\\s;\\[\\]{}()\"])"
+        }
+      ]
+    },
+    "builtins": {
+      "patterns": [
+        {
+          "name": "support.function.builtin.lcl",
+          "match": "(?<![^\\s;\\[\\]{}()\"])(?:same\\-binding\\?|binding\\-cell|not\\-same\\?|assert_neq|assert_eq|number\\?|string\\?|opaque\\?|empty\\?|float\\?|getvar|gensym|assert|list\\?|dict\\?|proc\\?|cell\\?|same\\?|has\\?|apply|arity|error|float|int\\?|puts|list|dict|put!|del!|repr|type|exit|len|get|put|del|ref|int)(?![^\\s;\\[\\]{}()\"])"
+        }
+      ]
+    },
+    "operators": {
+      "patterns": [
+        {
+          "name": "keyword.operator.lcl",
+          "match": "(?<![^\\s;\\[\\]{}()\"])(?:\\->>|\\->|\\+|\\-|\\*|==|!=|<=|>=|/|%|<|>)(?![^\\s;\\[\\]{}()\"])"
+        }
+      ]
+    },
+    "qualified-name": {
+      "name": "entity.name.function.qualified.lcl",
+      "match": "(?<![^\\s;\\[\\]{}()\"])(?:(?:::)[A-Za-z_][A-Za-z0-9_?!-]*(?:::[A-Za-z_][A-Za-z0-9_?!-]*)*|[A-Za-z_][A-Za-z0-9_?!-]*(?:::[A-Za-z_][A-Za-z0-9_?!-]*)+)(?![^\\s;\\[\\]{}()\"])"
+    },
+    "command-head": {
+      "comment": "The first word of a command (line start, after ;, [ or {) is a call unless it is a keyword, builtin, operator or number.",
+      "match": "(?:^|(?<=[;\\[{]))\\s*((?!\\$[A-Za-z_{])(?!#\\{)(?![@,\\\\])[^\\s;\\[\\]{}()\"$]+)",
+      "captures": {
+        "1": {
+          "patterns": [
+            {
+              "include": "#keywords"
+            },
+            {
+              "include": "#builtins"
+            },
+            {
+              "include": "#operators"
+            },
+            {
+              "include": "#number"
+            },
+            {
+              "include": "#qualified-name"
+            },
+            {
+              "name": "entity.name.function.call.lcl",
+              "match": ".+"
+            }
+          ]
+        }
+      }
+    },
+    "definitions": {
+      "patterns": [
+        {
+          "name": "meta.function.lcl",
+          "begin": "(?:^|(?<=[;\\[{]))\\s*(proc|macro)\\s+((?![$@,])[^\\s;\\[\\]{}()\"]+)\\s*(\\{)",
+          "end": "\\}",
+          "beginCaptures": {
+            "1": {
+              "name": "storage.type.function.lcl"
+            },
+            "2": {
+              "name": "entity.name.function.lcl"
+            },
+            "3": {
+              "name": "punctuation.section.parameters.begin.lcl"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.section.parameters.end.lcl"
+            }
+          },
+          "contentName": "meta.function.parameters.lcl",
+          "patterns": [
+            {
+              "include": "#parameters"
+            }
+          ]
+        },
+        {
+          "match": "(?:^|(?<=[;\\[{]))\\s*(proc|macro)\\s+((?![$@,])[^\\s;\\[\\]{}()\"]+)",
+          "captures": {
+            "1": {
+              "name": "storage.type.function.lcl"
+            },
+            "2": {
+              "name": "entity.name.function.lcl"
+            }
+          }
+        },
+        {
+          "name": "meta.function.lambda.lcl",
+          "begin": "(?:^|(?<=[;\\[{]))\\s*(lambda)\\s*(\\{)",
+          "end": "\\}",
+          "beginCaptures": {
+            "1": {
+              "name": "storage.type.function.lcl"
+            },
+            "2": {
+              "name": "punctuation.section.parameters.begin.lcl"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.section.parameters.end.lcl"
+            }
+          },
+          "contentName": "meta.function.parameters.lcl",
+          "patterns": [
+            {
+              "include": "#parameters"
+            }
+          ]
+        },
+        {
+          "match": "(?:^|(?<=[;\\[{]))\\s*(let|var|set!)\\s+((?![$@,])[^\\s;\\[\\]{}()\"]+)",
+          "captures": {
+            "1": {
+              "name": "storage.type.lcl"
+            },
+            "2": {
+              "name": "variable.other.definition.lcl"
+            }
+          }
+        },
+        {
+          "match": "(?:^|(?<=[;\\[{]))\\s*(foreach)\\s+((?![$@,])[^\\s;\\[\\]{}()\"]+)",
+          "captures": {
+            "1": {
+              "name": "keyword.control.loop.lcl"
+            },
+            "2": {
+              "name": "variable.other.definition.lcl"
+            }
+          }
+        },
+        {
+          "match": "(?:^|(?<=[;\\[{]))\\s*(namespace)\\s+((?![$@,])[^\\s;\\[\\]{}()\"]+)",
+          "captures": {
+            "1": {
+              "name": "storage.type.namespace.lcl"
+            },
+            "2": {
+              "name": "entity.name.namespace.lcl"
+            }
+          }
+        },
+        {
+          "match": "(?:^|(?<=[;\\[{]))\\s*(import)\\s+((?![$@,])[^\\s;\\[\\]{}()\"]+)",
+          "captures": {
+            "1": {
+              "name": "keyword.control.import.lcl"
+            },
+            "2": {
+              "name": "entity.name.namespace.lcl"
+            }
+          }
+        }
+      ]
+    },
+    "parameters": {
+      "patterns": [
+        {
+          "include": "#comment-nested"
+        },
+        {
+          "include": "#continuation"
+        },
+        {
+          "name": "meta.parameter.optional.lcl",
+          "begin": "(\\()\\s*((?![$@,])[^\\s;\\[\\]{}()\"]+)",
+          "end": "\\)",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.section.parens.begin.lcl"
+            },
+            "2": {
+              "name": "variable.parameter.lcl"
+            }
+          },
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.section.parens.end.lcl"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#words"
+            }
+          ]
+        },
+        {
+          "name": "variable.parameter.lcl",
+          "match": "[^\\s;\\[\\]{}()\"]+"
+        }
+      ]
+    }
+  }
+}

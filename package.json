@@ -1,0 +1,75 @@
+{
+  "name": "vscode-lcl",
+  "displayName": "Lcl",
+  "description": "Syntax highlighting and editing support for Lcl (Lexical Command Language)",
+  "version": "0.1.0",
+  "publisher": "bholten",
+  "license": "MIT",
+  "author": {
+    "name": "Brennan Holten",
+    "email": "bholten@protonmail.ch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bholten/vscode-lcl.git"
+  },
+  "bugs": {
+    "url": "https://github.com/bholten/vscode-lcl/issues"
+  },
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "keywords": [
+    "lcl",
+    "lexical command language",
+    "tcl",
+    "scripting"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "lcl",
+        "aliases": [
+          "Lcl",
+          "lcl"
+        ],
+        "extensions": [
+          ".lcl"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "lcl",
+        "scopeName": "source.lcl",
+        "path": "./syntaxes/lcl.tmLanguage.json"
+      },
+      {
+        "scopeName": "markdown.lcl.codeblock",
+        "path": "./syntaxes/lcl.markdown.injection.json",
+        "injectTo": [
+          "text.html.markdown"
+        ],
+        "embeddedLanguages": {
+          "meta.embedded.block.lcl": "lcl"
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "grammar:build": "python3 scripts/build-grammar.py syntaxes/lcl.tmLanguage.json",
+    "test": "npm run test:unit && npm run test:snap",
+    "test:unit": "vscode-tmgrammar-test -g syntaxes/lcl.tmLanguage.json 'test/unit/*.lcl'",
+    "test:snap": "vscode-tmgrammar-snap -g syntaxes/lcl.tmLanguage.json -s source.lcl 'test/snapshot/*.lcl'",
+    "test:snap:update": "vscode-tmgrammar-snap -g syntaxes/lcl.tmLanguage.json -s source.lcl --updateSnapshot 'test/snapshot/*.lcl'",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^3.2.0",
+    "vscode-tmgrammar-test": "^0.1.3"
+  }
+}
