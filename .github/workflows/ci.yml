@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # The committed grammar is generated; fail if it has drifted from the
+      # script that produces it. (Stdlib-only Python, preinstalled on runners.)
+      - name: Grammar is in sync with scripts/build-grammar.py
+        run: |
+          npm run grammar:build
+          git diff --exit-code -- syntaxes/lcl.tmLanguage.json
+
+      - run: npm test
+
+      - run: npm run package
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: vsix
+          path: '*.vsix'
+          if-no-files-found: error
+          retention-days: 14

@@ -69,7 +69,8 @@
     "package": "vsce package"
   },
   "devDependencies": {
-    "@vscode/vsce": "^3.2.0",
+    "@vscode/vsce": "^4.1.1",
+    "ovsx": "^1.4.0",
     "vscode-tmgrammar-test": "^0.1.3"
   }
 }
