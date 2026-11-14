@@ -84,6 +84,20 @@ npm run test:snap:update # accept snapshot changes after a grammar edit
 it runs under `lcl` and parses cleanly with the tree-sitter grammar,
 so it is the shared acceptance fixture for both projects.
 
+## Releasing
+
+Publishing is automated by `.github/workflows/publish.yml` and runs when a
+GitHub release is published; merging to `master` only runs CI.
+
+1. Bump `version` in `package.json` (`npm version <patch|minor|major> --no-git-tag-version`)
+   and add a `CHANGELOG.md` entry; merge to `master`.
+2. Create a GitHub release whose tag is that version (`v0.2.0` or `0.2.0`).
+
+The workflow checks that the tag matches `package.json`, runs the
+tests, builds one `.vsix` and publishes it to the VS Marketplace and
+Open VSX, and attaches it to the release. Both platforms respect the
+"pre-release" option.
+
 ## License
 
 MIT
